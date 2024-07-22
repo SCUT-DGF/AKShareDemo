@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 # 尝试：输出新闻稿，并且存入一个csv文件中
 
 
-def fs_news_cctv(date,base_path):
+def fs_news_cctv(date, base_path):
     """
     fs: fetch and store
     宏观情报信息：新闻联播文字稿
@@ -62,9 +62,9 @@ def fs_news_cctv(date,base_path):
 def fs_multiple_news_cctv(start_date, end_date):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
-    base_path =  os.path.join(parent_dir, 'data', 'stock_data/cctv_news')
+    base_path = os.path.join(parent_dir, 'data', 'stock_data/news_cctv')
     os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
-    os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/cctv_news'), exist_ok=True)
+    os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/news_cctv'), exist_ok=True)
     print(base_path)
 
 

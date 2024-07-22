@@ -34,6 +34,7 @@ def is_weekend(date):
 
 def periodic_task(base_dir):
     i = 0
+    filepath = os.path.join(base_dir, "company_data")
     while True:
         now = datetime.now()
         current_date = datetime.now().strftime("%Y%m%d")
@@ -63,16 +64,16 @@ def periodic_task(base_dir):
         # 每隔5次重新创建一次词典
         if i == 0:
             if not flag_ah and flag_hz:
-                get_stock_data(True)
-            elif  flag_hz:
-                get_stock_data(True)
+                get_stock_data(True, filepath)
+            elif flag_hz:
+                get_stock_data(True, filepath)
             if flag_ah:
-                get_stock_data_H(False)
+                get_stock_data_H(False, filepath)
         else:
             if flag_hz:
-                get_stock_data(False)
+                get_stock_data(False, filepath)
             if flag_ah:
-                get_stock_data_H(False)
+                get_stock_data_H(False, filepath)
 
         # 更新计数器
         i = (i + 1) % 6
@@ -106,6 +107,7 @@ def hourly_task(base_dir):
 
 def daily_task(base_dir):
     # 只支持当天闭市后获取，若到了下一天请自行调用封装好的函数，输入昨天对于的YYYYMMDD的report_date
+    file_path = os.path.join(base_dir,"company_history")
     last_executed_date = None
     while True:
         now = datetime.now()
@@ -123,7 +125,7 @@ def daily_task(base_dir):
 
         # 判断是否是15:00之后，并且确保一天只执行一次
         if now.hour >= 15 and (last_executed_date is None or last_executed_date != current_date):
-            get_daily_reports(current_date)
+            get_daily_reports(report_date=current_date, base_path=file_path)
             get_company_relative_profiles()
             last_executed_date = current_date
 
@@ -134,14 +136,20 @@ def daily_task(base_dir):
 
 
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(current_dir)
-    base_path =  os.path.join(parent_dir, 'data', 'stock_data')
-    os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
-    os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data'), exist_ok=True)
-    os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/深A股'), exist_ok=True)
-    os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
-    print(base_path)
+
+    is_local = True
+    if is_local:
+        base_path = './stock_data'
+    else:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        base_path = os.path.join(parent_dir, 'data', 'stock_data')
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data'), exist_ok=True)
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/深A股'), exist_ok=True)
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
+        print(base_path)
+
 
     parser = argparse.ArgumentParser(description="Fetch stock data and save to specified directory periodically.")
     parser.add_argument('--base_dir', type=str, default=base_path, help='Base directory to save the stock data')
