@@ -23,7 +23,6 @@
         >
         </el-date-picker>
       </div>
-
       <div>
         <span class="demonstration">选择股票</span>
         <el-select
@@ -32,9 +31,8 @@
           clearable
           remote
           :remote-method="ChangeStock"
-          :loading="loading"
           placeholder="请选择"
-          @change="ChangeStock"
+          @focus="CleanStock"
         >
           <el-option
             v-for="item in options"
@@ -66,52 +64,57 @@ export default {
       },
       datevalue: "",
       stockvalue: "",
-      options: [
-        {
-          value: "111-华为",
-        },
-        {
-          value: "111-xiaomi",
-        },
-        {
-          value: "111-123",
-        },
-        {
-          value: "111-333",
-        },
-        {
-          value: "111-14124",
-        },
-      ],
+      options: [],
       value: "",
     };
   },
   methods: {
     ChangeStock(query) {
-      console.log(query);
+      this.options = [];
       if (query !== "") {
-        this.loading = true;
-        this.$axios({
-          url: "#",
-          params: {
-            stockinfo: query,
-          },
-        });
-        setTimeout(() => {
-          this.loading = false;
-          this.options = this.list.filter((item) => {
-            return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1;
+        fetch("/sh_a_stocks.json")
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            const list = data.map((obj) => {
+              return obj.代码 + "-" + obj.名称;
+            });
+            list.forEach((element) => {
+              if (element.includes(query)) {
+                const obj = { value: element.toString() };
+                this.options.push(obj);
+              }
+            });
           });
-        }, 200);
+        fetch("/sz_a_stocks.json")
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            const list = data.map((obj) => {
+              return obj.代码 + "-" + obj.名称;
+            });
+            list.forEach((element) => {
+              if (element.includes(query)) {
+                const obj = { value: element.toString() };
+                this.options.push(obj);
+              }
+            });
+          });
+        console.log(this.value);
       } else {
         this.options = [];
       }
     },
-  },
-  fn() {
-    console.log(this.datevalue[0].toLocaleDateString());
-    console.log(this.datevalue[1].toLocaleDateString());
-    console.log(this.value);
+    CleanStock() {
+      this.options = [];
+    },
+    fn() {
+      console.log(this.datevalue[0].toLocaleDateString());
+      console.log(this.datevalue[1].toLocaleDateString());
+      console.log(this.value);
+    },
   },
 };
 </script>
