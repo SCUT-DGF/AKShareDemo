@@ -23,6 +23,14 @@ from basic_func import is_holiday
 from basic_func import is_weekend
 
 
+# 240801版本
+# 外用接口：
+# report_date = "20240731"
+# check_daily_up_interface(report_date, creating_new_dict=False)
+# week_report_date = "20240726"
+# get_weekly_reports(week_report_date, report_date)
+# get_up_stock_interface(report_date)
+
 def get_week_range(date_str, check_time=False):
     """
     输入一个YYYYMMDD日期，输出以周一至周日为一周的，该日期所属周的周一与周五的日期
@@ -240,9 +248,8 @@ def get_weekly_report(func, basic_name, stock_dict, flag, args, base_path='./sto
         if not df_up_5_days.empty:
             save_to_json_v2(df_up_5_days, os.path.join(report_path, f"{basic_name}_up_5_days_{report_date}.json"))
 
-
 def check_daily_up(func, basic_name, stock_dict, flag, args, base_path='./stock_data/company_data',
-                           report_date=get_yesterday(), get_full_file=True,  individual_file=True):
+                           report_date=get_yesterday(), get_full_file=True, individual_file=True):
     """
     获取每日报表
     :param func: 调用的接口函数
@@ -321,7 +328,7 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, base_path='./stock_
             if keyboard.is_pressed('enter'):
                 print(f"强制跳过接口：{basic_name}")
                 return
-        if debug and i > 300:
+        if debug and i > 400:
             return
 
         # 跳过已处理的股票
@@ -345,11 +352,13 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, base_path='./stock_
             os.makedirs(os.path.join(targeted_filepath, company_name_safe), exist_ok=True)
             filepath = os.path.join(targeted_filepath, f"{company_name_safe}_{basic_name}_{report_date}.json")
 
-            # 通过args传递接口的其它参数
-            if is_symbol:
-                interface_df = func(symbol=stock_code, **args)
-            else:
-                interface_df = func(stock=stock_code, **args)
+            interface_df = load_json_df(filepath)
+            if interface_df.empty:
+                # 通过args传递接口的其它参数
+                if is_symbol:
+                    interface_df = func(symbol=stock_code, **args)
+                else:
+                    interface_df = func(stock=stock_code, **args)
 
             if not isinstance(interface_df, pd.DataFrame):
                 raise ValueError(f"{basic_name} does not return DataFrame ")
@@ -442,6 +451,154 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, base_path='./stock_
         if not df_up_range10.empty:
             save_to_json_v2(df_up_range10, up_range10_file)
 
+def get_up_stock(func, basic_name, stock_dict, flag, args, base_path='./stock_data/company_data',
+                           report_date=get_yesterday(), get_full_file=True, individual_file=True, fetch=True):
+    """
+    获取每日报表
+    :param func: 调用的接口函数
+    :param stock_dict: 已生成的的深A或沪A股字典
+    :param basic_name: 接口的基本名称，用于给各文件命名
+    :param flag: 1表示深A股字典，0表示沪A股字典；内部需要使用不同接口
+    :param args: 接口需要的股票代码外的参数
+    :param base_path: 每日报表生成的基本路径
+    :param report_date: 数据储存时文件的后缀id，默认为日期，为日期时可用find_latest_date函数
+    :param get_full_file: 强制为True，否则无输出文件
+    :param individual_file: bool类型，数据文件存储公司文件夹还是深沪A股的大文件夹，默认为True即存入公司文件夹
+    :return: 无返回值，直接写入文件并存储
+    """
+    debug = True
+    # 加载中断点记录
+    interrupt_file = os.path.join(base_path, f'{basic_name}_interrupt_{report_date}.json')
+    interrupt_data = load_json(interrupt_file)
+    if not isinstance(interrupt_data, dict):
+        interrupt_data = {}
+    processed_stocks = set(interrupt_data.get('processed_stocks', []))
+    # 错误报告的读取
+    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{report_date}.json")
+    error_reports = load_json(error_file)
+    error_reports = []
+    if not isinstance(error_reports, list):
+        error_reports = []
+    # 已处理数据的读取，用于获取完整内容
+    report_path = os.path.join(base_path, 'weekly_report')
+    os.makedirs(report_path, exist_ok=True)
+
+    data_file = os.path.join(os.path.join(report_path, f"all_up_range_report_{report_date}.json"))
+
+    processed_data = load_json_df(data_file)
+    # if not isinstance(processed_data, list):
+    #     processed_data = []
+    if processed_data.empty:
+        processed_data = pd.DataFrame(columns=["代码", "名称"])
+
+    temp_args = inspect.signature(func).parameters
+    is_symbol = "symbol" in temp_args
+
+    # 遍历所有股票的字段
+    total_stocks = len(stock_dict)
+    for i, stock in enumerate(stock_dict):
+        stock_code = stock['代码']
+        stock_name = stock['名称']
+
+        # 为了方便调试，开启以下功能
+        if debug and keyboard.is_pressed('enter'):
+            print(f"继续按回车键1秒跳过接口：{basic_name}")
+            time.sleep(1)
+            if keyboard.is_pressed('enter'):
+                print(f"强制跳过接口：{basic_name}")
+                return
+        if debug and i > 300:
+            return
+
+        # 跳过已处理的股票
+        if stock_code in processed_stocks:
+            # print(f"公司 {stock_name} 代码 {stock_code}已处理，跳过 ")
+            continue
+        try:
+            # 先计算存储路径；将内容装在入对应公司文件夹中
+            company_name = stock["名称"].strip()  # 去除名称两端的空格
+            # 如果公司名称以 "ST" 开头，则跳过当前循环
+            if company_name.startswith("ST") or company_name.startswith("*ST"):
+                continue
+            # 替换非法字符
+            company_name_safe = company_name.replace("*", "")  # 替换 * 字符
+            market = "深A股" if flag else "沪A股"
+            # # 写入的文件路径
+            if individual_file:
+                targeted_filepath = os.path.join(base_path, market, company_name_safe)
+            else:
+                targeted_filepath = os.path.join(base_path, market)  # 个股信息存储的路径
+            os.makedirs(os.path.join(targeted_filepath, company_name_safe), exist_ok=True)
+            filepath = os.path.join(targeted_filepath, f"{company_name_safe}_{basic_name}_{report_date}.json")
+
+            # 通过args传递接口的其它参数
+            if fetch:
+                interface_df = load_json_df(filepath)
+                if interface_df.empty:
+                    if is_symbol:
+                        interface_df = func(symbol=stock_code, **args)
+                    else:
+                        interface_df = func(stock=stock_code, **args)
+            else:
+                if is_symbol:
+                    interface_df = func(symbol=stock_code, **args)
+                else:
+                    interface_df = func(stock=stock_code, **args)
+
+            if not isinstance(interface_df, pd.DataFrame):
+                raise ValueError(f"{basic_name} does not return DataFrame ")
+            if interface_df.empty:
+                print(f"Fail to fetch {stock_name}  {stock_code} data，interface：{basic_name}")
+                error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag,
+                                      "Error": f"From {basic_name}m empty dataframe"})
+                continue
+            # 确保日期字段转换为字符串格式
+            for col in interface_df.columns:
+                if pd.api.types.is_datetime64_any_dtype(interface_df[col]):
+                    interface_df[col] = interface_df[col].apply(lambda x: x.isoformat() if pd.notnull(x) else None)
+                elif pd.api.types.is_object_dtype(interface_df[col]):
+                    interface_df[col] = interface_df[col].astype(str)
+
+            # 记录已处理的股票
+            processed_stocks.add(stock_code)
+            save_to_json_v2(interface_df, filepath)
+            count = 0
+            for index, row in interface_df.iterrows():
+                count += 1
+                if count > 1:
+                    print(f"Error processing stock {stock_code}: input file interface_df has more than one row")
+                    error_reports.append(
+                        {"stock_name": stock_name, "stock_code": stock_code, "flag": flag, "Error": "input file interface_df has more than one row"})
+                pct_change = row["涨跌幅"]
+                if pct_change > 0:
+                    processed_data = pd.concat([processed_data, pd.DataFrame(
+                        [{"代码": stock_code, "名称": stock_name}])], ignore_index=True)
+            # 定期保存中间结果和中断点
+            if (i + 1) % 10 == 0 or i == total_stocks - 1:
+                if get_full_file:
+                    save_to_json_v2(processed_data, data_file)
+                save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
+                save_to_json(error_reports, error_file)
+                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+
+        except Exception as e:
+            print(f"Error processing stock {stock_code}: {e}")
+            error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag, "Error": str(e)})
+            if (i + 1) % 10 == 0 or i == total_stocks - 1:
+                if get_full_file:
+                    save_to_json_v2(processed_data, data_file)
+                save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
+                save_to_json(error_reports, error_file)
+
+                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+            continue
+
+        # 保存最终结果
+        if get_full_file:
+            save_to_json_v2(processed_data, data_file)
+        save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
+        save_to_json(error_reports, error_file)
+
 
 def get_weekly_reports(date, report_date, base_path='./stock_data/company_data'):
     # 输入日期，基本路径（存到./weekly_report文件夹中）
@@ -464,7 +621,6 @@ def get_weekly_reports(date, report_date, base_path='./stock_data/company_data')
 
 def check_daily_up_interface(date, base_path='./stock_data/company_data', creating_new_dict=True):
     func = ak.stock_zh_a_hist
-    # 正确的字典形式
     args = {
         'period': 'daily',
         'start_date': date,
@@ -497,6 +653,26 @@ def check_daily_up_interface(date, base_path='./stock_data/company_data', creati
     get_limit_up_dict_v2(date)
     check_daily_up(func, "daily_up_report", sh_dict, 1, args, base_path, date, individual_file=True)
     check_daily_up(func, "daily_up_report", sz_dict, 0, args, base_path, date, individual_file=True)
+
+
+def get_up_stock_interface(date, base_path='./stock_data/company_data'):
+    """
+    默认直接读取已有当日字典，在check_daily_up_interfaces后使用。
+    :param date:
+    :param base_path: 要求字典在该路径下
+    :return:
+    """
+    func = ak.stock_zh_a_hist
+    args = {
+        'period': 'daily',
+        'start_date': date,
+        'end_date': date,
+        'adjust': ''
+    }
+    sh_full_dict = load_json(os.path.join(base_path, "sh_a_stocks.json"))
+    sz_full_dict = load_json(os.path.join(base_path, "sz_a_stocks.json"))
+    get_up_stock(func, "daily_up_report", sh_full_dict, 1, args, base_path, date, individual_file=True, fetch=False)
+    get_up_stock(func, "daily_up_report", sz_full_dict, 0, args, base_path, date, individual_file=True, fetch=False)
 
 
 def get_limit_up_dict(date, base_path='./stock_data/company_data', excluding=True, relative_path='weekly_report'):
@@ -643,7 +819,7 @@ def exclude_new_stock_interface(date, base_path='./stock_data/company_data'):
     exclude_new_stock(sh_dict, sz_dict)
 
 debug = True
-report_date = "20240730"
+report_date = "20240731"
 if debug:
     base_path = "./stock_data/company_data"
 else:
@@ -663,3 +839,4 @@ check_daily_up_interface(report_date, creating_new_dict=False)
 
 week_report_date = "20240726"
 get_weekly_reports(week_report_date, report_date)
+get_up_stock_interface(report_date)
