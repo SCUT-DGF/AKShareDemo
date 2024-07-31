@@ -1,11 +1,14 @@
 import os
 import json
+import time
+
 import numpy as np
 import pandas as pd
 import akshare as ak
 import inspect
 from datetime import date, datetime, timedelta
 
+import keyboard
 
 
 
@@ -52,6 +55,9 @@ def load_json_df(path):
     :param path: （指定路径中的）文件
     :return:dataframe格式数据，读取失败返回空dataframe。
     """
+    if not path:
+        print("In load_json_df: Error: path is None or empty.")
+        return pd.DataFrame()
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             return pd.DataFrame(json.load(f))
@@ -222,9 +228,8 @@ def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='
     """
     获取每日报表
     :param func: 调用的接口函数
-    :param stock_dict: 已生成的的深A或沪A股字典
     :param basic_name: 接口的基本名称，用于给各文件命名
-    :param stock_dict: 遍历的股票字典
+    :param stock_dict: 遍历的股票字典，已生成的的深A或沪A股字典
     :param flag: 1表示深A股字典，0表示沪A股字典；内部需要使用不同接口
     :param args: 接口需要的股票代码外的参数
     :param base_path: 每日报表生成的基本路径
@@ -233,7 +238,7 @@ def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='
     :param individual_file: bool类型，数据文件存储公司文件夹还是深沪A股的大文件夹，默认为True即存入公司文件夹
     :return: 无返回值，直接写入文件并存储
     """
-
+    debug = True
     # report_date = "20240710" # 操作标识号，默认为昨天的日期
     # 加载中断点记录
     interrupt_file = os.path.join(base_path, f'{basic_name}_interrupt_{report_date}.json')
@@ -264,6 +269,18 @@ def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='
     for i, stock in enumerate(stock_dict):
         stock_code = stock['代码']
         stock_name = stock['名称']
+
+        # 为了方便调试，开启以下功能
+        if debug and keyboard.is_pressed('enter'):
+            print(f"继续按回车键1秒跳过接口：{basic_name}")
+            time.sleep(1)
+            if keyboard.is_pressed('enter'):
+                print(f"强制跳过接口：{basic_name}")
+                return
+        if debug and i >300:
+            return
+
+
         # 跳过已处理的股票
         if stock_code in processed_stocks:
             # print(f"公司 {stock_name} 代码 {stock_code}已处理，跳过 ")
@@ -282,6 +299,7 @@ def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='
                 targeted_filepath = os.path.join(base_path, market, company_name_safe)
             else:
                 targeted_filepath = os.path.join(base_path, market)  # 个股信息存储的路径
+            os.makedirs(os.path.join(targeted_filepath, company_name_safe), exist_ok=True)
             filepath = os.path.join(targeted_filepath, f"{company_name_safe}_{basic_name}_{report_date}.json")
 
             # 通过args传递接口的其它参数
@@ -428,6 +446,15 @@ def get_yesterday():
 
 
 def is_holiday(date_str):
+    holidays = [
+        "20240101",  # 元旦
+        "20240210", "20240211", "20240212", "20240213", "20240214", "20240215", "20240216",  # 春节
+        "20240405",  # 清明节
+        "20240501",  # 劳动节
+        "20240609", "20240610", "20240611",  # 端午节
+        "20240913", "20240914", "20240915",  # 中秋节
+        "20241001", "20241002", "20241003", "20241004", "20241005", "20241006", "20241007",  # 国庆节
+    ]
     return date_str in holidays
 
 

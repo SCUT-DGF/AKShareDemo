@@ -268,9 +268,9 @@ api_void_monthly={
 }
 
 
-def call_func_traversal(basic_name, begin_date, end_date, id, interrupt_file, processed_interfaces,
+def call_func_traversal(basic_name, begin_date, end_date, report_id, interrupt_file, processed_interfaces,
                     base_path='./stock_data/stock_relative'):
-    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{id}.json")
+    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{report_id}.json")
     error_reports = load_json(error_file)
     if not isinstance(error_reports, list):
         error_reports = []
@@ -296,7 +296,7 @@ def call_func_traversal(basic_name, begin_date, end_date, id, interrupt_file, pr
             df = func(**params)
             print(f"successful getting {key}")
             print(df)
-            save_to_json_v2(df, f"{base_path}/{key}_{fetch_date}.json")
+            save_to_json_v2(df, f"{base_path}/{key}_{report_id}.json")
         except Exception as e:
             print(f"When getting {key}: Error: {str(e)}")
             error_reports.append({"api_name": key, "error": str(e)})
@@ -497,8 +497,8 @@ def stock_lhb_detail_daily_sina(begin_date, end_date):
     return all_data
 
 
-def call_date_range(basic_name, begin_date, end_date, id, interrupt_file, processed_interfaces, base_path='./stock_data/stock_relative'):
-    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{id}.json")
+def call_date_range(basic_name, begin_date, end_date, report_id, interrupt_file, processed_interfaces, base_path='./stock_data/stock_relative'):
+    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{report_id}.json")
     error_reports = load_json(error_file)
     if not isinstance(error_reports, list):
         error_reports = []
@@ -523,6 +523,9 @@ def call_date_range(basic_name, begin_date, end_date, id, interrupt_file, proces
         "stock_report_fund_hold_bx": (stock_report_fund_hold_bx, {"start_date": f"{begin_date}", "end_date": f"{end_date}"}),
         "stock_report_fund_hold_xt": (stock_report_fund_hold_xt, {"start_date": f"{begin_date}", "end_date": f"{end_date}"}),
         "stock_lhb_detail_daily_sina": (stock_lhb_detail_daily_sina,{"start_date": f"{begin_date}", "end_date": f"{end_date}"}), # 每日
+        # 输入的是开始日期
+        "stock_jgdy_tj_em": (ak.stock_jgdy_tj_em, {"date": f"{begin_date}"}),  # 机构调研统计接口 开始时间
+        "stock_jgdy_detail_em": (ak.stock_jgdy_detail_em, {"date": f"{begin_date}"}),  # 机构调研详细接口 开始时间
 
         # "stock_jgdy_tj_em": (ak.stock_jgdy_tj_em, {"date": "20180928"}),  # 机构调研统计接口
         # "stock_jgdy_detail_em": (ak.stock_jgdy_detail_em, {"date": "20180928"}),  # 机构调研详细接口
@@ -555,14 +558,14 @@ def call_date_range(basic_name, begin_date, end_date, id, interrupt_file, proces
     total_interfaces = len(api_range)
     for key, (func, params) in api_range.items():
         if key in processed_interfaces:
-            # print(f"接口 {key} 在 {id}已处理，跳过 ")
+            # print(f"接口 {key} 在 {report_id}已处理，跳过 ")
             continue
         i += 1
         try:
             df = func(**params)
             print(f"successful getting {key}")
             print(df)
-            save_to_json_v2(df, f"{base_path}/{key}_{fetch_date}.json")
+            save_to_json_v2(df, f"{base_path}/{key}_{report_id}.json")
         except Exception as e:
             print(f"When getting {key}: Error: {str(e)}")
             error_reports.append({"api_name": key, "error": str(e)})
@@ -583,8 +586,8 @@ def call_date_range(basic_name, begin_date, end_date, id, interrupt_file, proces
 
 
 
-def call_all_functions(basic_name, api_func_dict, report_date, interrupt_file, processed_interfaces, base_path='./stock_data/stock_relative'):
-    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{report_date}.json")
+def call_all_functions(basic_name, api_func_dict, report_id, interrupt_file, processed_interfaces, base_path='./stock_data/stock_relative'):
+    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{report_id}.json")
     error_reports = load_json(error_file)
     if not isinstance(error_reports, list):
         error_reports = []
@@ -600,7 +603,7 @@ def call_all_functions(basic_name, api_func_dict, report_date, interrupt_file, p
             df = func(**params)
             print(f"successful getting {key}")
             print(df)
-            save_to_json_v2(df, f"{base_path}/{key}_{fetch_date}.json")
+            save_to_json_v2(df, f"{base_path}/{key}_{report_id}.json")
         except Exception as e:
             print(f"When getting {key}: Error: {str(e)}")
             error_reports.append({"api_name": key, "error": str(e)})

@@ -1,14 +1,38 @@
 import akshare as ak
 import json
 import os
+import pandas as pd
 from datetime import datetime, timedelta
-
+from basic_func import save_to_json_v2
 # 给出的示例
 # get_roll_yield_bar_df = ak.get_roll_yield_bar(type_method="date",var="RB",start_day="20180618",end_day="20180718")
 # print(get_roll_yield_bar_df)
 
 # 尝试：输出新闻稿，并且存入一个csv文件中
 
+def get_news_cctv(date, base_path):
+    """
+    直接调用ak.news_cctv(date=date)接口，返回df并保存
+    :param date:
+    :return:
+    """
+    # 将日期字符串转换为 datetime 对象，并检查是否超过当前日期
+    try:
+        date_obj = datetime.strptime(date, "%Y%m%d")
+    except ValueError:
+        raise ValueError("日期格式错误，请使用 YYYYMMDD 格式")
+    today = datetime.today()
+    if date_obj > today:
+        raise ValueError("日期超过当前日期")
+    lower_bound = datetime.strptime("20160330", "%Y%m%d")
+    if lower_bound > date_obj:
+        raise ValueError("日期超过支持的最早日期，最早日期是20160330")
+
+    # 调用接口：
+    news_cctv_df = ak.news_cctv(date=date)
+    save_to_json_v2(news_cctv_df,f'{base_path}/news_cctv_{date}.json')
+
+    return news_cctv_df
 
 def fs_news_cctv(date, base_path):
     """
@@ -40,9 +64,8 @@ def fs_news_cctv(date, base_path):
     lower_bound = datetime.strptime("20160330", "%Y%m%d")
     if lower_bound > date_obj:
         raise ValueError("日期超过支持的最早日期，最早日期是20160330")
-    
-    # 调用接口：
-    news_cctv_df = ak.news_cctv(date=date)
+
+    news_cctv_df = get_news_cctv(date)
     # 转换为字典列表形式
     news_list = news_cctv_df.to_dict(orient='records')
     # 存储文件路径
@@ -60,12 +83,16 @@ def fs_news_cctv(date, base_path):
 
 
 def fs_multiple_news_cctv(start_date, end_date):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(current_dir)
-    base_path = os.path.join(parent_dir, 'data', 'stock_data/news_cctv')
-    os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
-    os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/news_cctv'), exist_ok=True)
-    print(base_path)
+    debug = True
+    if debug:
+        base_path = "./news_cctv"
+    else:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        base_path = os.path.join(parent_dir, 'data', 'stock_data/news_cctv')
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/news_cctv'), exist_ok=True)
+        print(base_path)
 
 
     # 将日期字符串转换为 datetime 对象

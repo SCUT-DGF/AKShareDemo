@@ -104,10 +104,9 @@ def hourly_task(base_dir):
         current_time = datetime.now()
         time.sleep(3600)  # 等待1小时
 
-
 def daily_task(base_dir):
     # 只支持当天闭市后获取，若到了下一天请自行调用封装好的函数，输入昨天对于的YYYYMMDD的report_date
-    file_path = os.path.join(base_dir,"company_history")
+    file_path = os.path.join(base_dir, "company_data")
     last_executed_date = None
     while True:
         now = datetime.now()
@@ -133,6 +132,8 @@ def daily_task(base_dir):
         next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
         sleep_seconds = (next_hour - now).total_seconds()
         time.sleep(sleep_seconds)
+
+# def weekly_task(base_dir):
 
 
 if __name__ == "__main__":

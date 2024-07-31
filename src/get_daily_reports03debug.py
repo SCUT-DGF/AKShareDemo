@@ -173,14 +173,21 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
             # else:
             stock_hist_df = ak.stock_zh_a_hist(symbol=stock_code, period="daily", start_date=report_date,
                                                end_date=report_date, adjust="qfq")
-            stock_hist_path = os.path.join(base_path, market, company_name_safe,
-                                         f"{company_name_safe}_stock_hist_{report_date_str}.json")
-            save_to_json_v2(stock_hist_df,stock_hist_path)
-
             if stock_hist_df.empty:
                 print(f"无法获取公司 {stock_name} 代码 {stock_code} 的历史行情数据，对应接口：ak.stock_zh_a_hist")
                 error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
                 continue
+            # 正确定义日期类型
+            for col in stock_hist_df.columns:
+                if pd.api.types.is_datetime64_any_dtype(stock_hist_df[col]):
+                    stock_hist_df[col] = stock_hist_df[col].apply(
+                        lambda x: x.isoformat() if pd.notnull(x) else None)
+                elif pd.api.types.is_object_dtype(stock_hist_df[col]):
+                    stock_hist_df[col] = stock_hist_df[col].astype(str)
+            stock_hist_path = os.path.join(base_path, market, company_name_safe,
+                                           f"{company_name_safe}_stock_hist_{report_date_str}.json")
+            save_to_json_v2(stock_hist_df, stock_hist_path)
+
             # print("success1")
             # 获取个股信息
             basic_prefix = "individual_info"

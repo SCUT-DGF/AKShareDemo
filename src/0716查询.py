@@ -28,6 +28,43 @@ holidays = [
     "20241001", "20241002", "20241003", "20241004", "20241005", "20241006", "20241007",  # 国庆节
 ]
 
+def get_past_years(begin_date, end_date):
+    start = datetime.strptime(begin_date, "%Y%m%d")
+    end = datetime.strptime(end_date, "%Y%m%d")
+    current_year = datetime.now().year
+    years = []
+
+    while start <= end:
+        year = start.year
+        if year < current_year and year not in years:
+            years.append(year)
+        start = datetime(year + 1, 1, 1)
+
+    return years
+
+def generate_special_dates(begin_date, end_date):
+    start = datetime.strptime(begin_date, "%Y%m%d")
+    end = datetime.strptime(end_date, "%Y%m%d")
+    current_year = datetime.now().year
+    dates = []
+
+    while start <= end:
+        year = start.year
+        if year < current_year:
+            date_str = f"{year}1231"
+        elif year == current_year:
+            date_str = f"{year}0331"
+        else:
+            break
+
+        if date_str not in dates:
+            dates.append(date_str)
+
+        # Move to the next year
+        start = datetime(year + 1, 1, 1)
+
+    return dates
+
 def generate_quarters(begin_date, end_date):
     start = datetime.strptime(begin_date, "%Y%m%d")
     end = datetime.strptime(end_date, "%Y%m%d")
@@ -45,6 +82,7 @@ def generate_quarters(begin_date, end_date):
         else:
             start = datetime(year, (quarter * 3) + 1, 1)
     return quarters
+
 
 def is_holiday(date_str):
     return date_str in holidays
@@ -142,7 +180,7 @@ def search_date_lists(key, func, args, date_lists):
 api_dict = {
     # 可单独调用
     "stock_jgdy_tj_em": (ak.stock_jgdy_tj_em, {"date": "20180928"}),  # 机构调研统计接口 开始时间
-    "stock_jgdy_detail_em": (ak.stock_jgdy_detail_em, {"date": "20180928"}),  # 机构调研详细接口
+    "stock_jgdy_detail_em": (ak.stock_jgdy_detail_em, {"date": "20180928"}),  # 机构调研详细接口 开始时间
 
     # 任意开市日期 已完成
     "stock_tfp_em": (ak.stock_tfp_em, {"date": "20240426"}),  # 停复牌信息  # 开市日
@@ -157,7 +195,8 @@ api_dict = {
     "stock_sy_em": (ak.stock_sy_em, {"date": "20230331"}),  # 个股商誉明细  # 参考网站指定的数据日期
     "stock_sy_hy_em": (ak.stock_sy_hy_em, {"date": "20230331"}),  # 行业商誉数据  # 参考网站指定的数据日期
     "stock_analyst_rank_em": (ak.stock_analyst_rank_em, {"year": "2022"}),  # 分析师指数排行
-    "stock_report_disclosure": (ak.stock_report_disclosure, {"market": "深市", "period": "2022年报"}),  # 预约披露 今年以前
+    "stock_report_disclosure_sz": (ak.stock_report_disclosure, {"market": "深市", "period": "2022年报"}),  # 预约披露 今年以前
+    "stock_report_disclosure_sh": (ak.stock_report_disclosure, {"market": "沪市", "period": "2022年报"}),  # 预约披露 今年以前
 
     # 报表日期 已完成
     "stock_zcfz_em": (ak.stock_zcfz_em, {"date": "20220331"}),  # 资产负债表  # choice of {"20200331", "20200630", "20200930", "20201231", "..."}; 从 20100331 开始

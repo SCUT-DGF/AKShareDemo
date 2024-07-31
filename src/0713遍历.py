@@ -3,13 +3,17 @@ import os
 import pandas as pd
 import akshare as ak
 from datetime import date, datetime, timedelta
-
+import time
 from basic_func import save_to_json
 from basic_func import save_to_json_v2
 from basic_func import find_latest_file
 from basic_func import load_json
 from basic_func import stock_traversal_module
 from basic_func import create_dict
+
+import keyboard
+
+
 
 def generate_quarters(begin_date, end_date):
     start = datetime.strptime(begin_date, "%Y%m%d")
@@ -60,14 +64,15 @@ def generate_report_dates(begin_date, end_date):
     return report_dates
 
 
-def call_func_traversal(basic_name, begin_date, end_date, id, base_path='./stock_data/stock_relative'):
+def call_func_traversal(basic_name, begin_date, end_date, report_id, base_path='./stock_data/stock_relative'):
+    debug = True
     # 加载中断点记录
-    interrupt_file = os.path.join(base_path, f'{basic_name}_interrupt_{id}.json')
+    interrupt_file = os.path.join(base_path, f'{basic_name}_interrupt_{report_id}.json')
     interrupt_data = load_json(interrupt_file)
     if not isinstance(interrupt_data, dict):
         interrupt_data = {}
     processed_interfaces = set(interrupt_data.get('processed_interfaces', []))
-    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{id}.json")
+    error_file = os.path.join(base_path, f"{basic_name}_error_reports_{report_id}.json")
     error_reports = load_json(error_file)
     if not isinstance(error_reports, list):
         error_reports = []
@@ -75,29 +80,29 @@ def call_func_traversal(basic_name, begin_date, end_date, id, base_path='./stock
     # 接口调用的相关定义
     api_traversal = {
         # 遍历
-
+        "stock_news_em": (ak.stock_news_em, {}),  # 新闻-个股新闻
     }
     api_szsh = {  # 深A 沪A
         "stock_news_em": (ak.stock_news_em, {}),  # 新闻-个股新闻
-        "stock_info_change_name": (ak.stock_info_change_name, {}),  # 周期遍历
-        "stock_fund_stock_holder": (ak.stock_fund_stock_holder, {}),  # 遍历季度
-        "stock_main_stock_holder": (ak.stock_main_stock_holder, {}),  # 遍历季度
-        "stock_institute_recommend_detail": (ak.stock_institute_recommend_detail, {}),  # 周期遍历
-        "stock_zh_vote_baidu_index": (ak.stock_zh_vote_baidu, {"indicator": "指数"}),  # 遍历
-        "stock_zh_vote_baidu_stock": (ak.stock_zh_vote_baidu, {"indicator": "股票"}),  # 遍历
-        "stock_comment_detail_zlkp_jgcyd_em": (ak.stock_comment_detail_zlkp_jgcyd_em, {}),
-        # 千股千评详情 - 主力控盘 - 机构参与度
-        "stock_comment_detail_zhpj_lspf_em": (ak.stock_comment_detail_zhpj_lspf_em, {}),
-        # 千股千评详情 - 综合评价 - 历史评分
-        "stock_comment_detail_scrd_focus_em": (ak.stock_comment_detail_scrd_focus_em, {}),
-        # 千股千评详情 - 市场热度 - 用户关注指数
-        "stock_comment_detail_scrd_desire_em": (ak.stock_comment_detail_scrd_desire_em, {}),  # 市场参与意愿
-        "stock_comment_detail_scrd_desire_daily_em": (
-            ak.stock_comment_detail_scrd_desire_daily_em, {}),
+        # "stock_info_change_name": (ak.stock_info_change_name, {}),  # 周期遍历
+        # "stock_fund_stock_holder": (ak.stock_fund_stock_holder, {}),  # 遍历季度
+        # "stock_main_stock_holder": (ak.stock_main_stock_holder, {}),  # 遍历季度
+        # "stock_institute_recommend_detail": (ak.stock_institute_recommend_detail, {}),  # 周期遍历
+        # "stock_zh_vote_baidu_index": (ak.stock_zh_vote_baidu, {"indicator": "指数"}),  # 遍历
+        # "stock_zh_vote_baidu_stock": (ak.stock_zh_vote_baidu, {"indicator": "股票"}),  # 遍历
+        # "stock_comment_detail_zlkp_jgcyd_em": (ak.stock_comment_detail_zlkp_jgcyd_em, {}),
+        # # 千股千评详情 - 主力控盘 - 机构参与度
+        # "stock_comment_detail_zhpj_lspf_em": (ak.stock_comment_detail_zhpj_lspf_em, {}),
+        # # 千股千评详情 - 综合评价 - 历史评分
+        # "stock_comment_detail_scrd_focus_em": (ak.stock_comment_detail_scrd_focus_em, {}),
+        # # 千股千评详情 - 市场热度 - 用户关注指数
+        # "stock_comment_detail_scrd_desire_em": (ak.stock_comment_detail_scrd_desire_em, {}),  # 市场参与意愿
+        # "stock_comment_detail_scrd_desire_daily_em": (
+        #     ak.stock_comment_detail_scrd_desire_daily_em, {}),
         # 日度市场参与意愿
         "stock_comment_detail_scrd_cost_em": (ak.stock_comment_detail_scrd_cost_em, {}),  # 市场成本
         "stock_cyq_em": (ak.stock_cyq_em, {"adjust": "qfq"}),
-
+        #
         "stock_industry_change_cninfo": (
             ak.stock_industry_change_cninfo, {"start_date": f"{begin_date}", "end_date": f"{end_date}"}),
         # 上市公司行业归属的变动情况
@@ -109,63 +114,70 @@ def call_func_traversal(basic_name, begin_date, end_date, id, base_path='./stock
         # 配股实施方案
         "stock_profile_cninfo": (ak.stock_profile_cninfo, {}),  # 公司概况
         "stock_ipo_summary_cninfo": (ak.stock_ipo_summary_cninfo, {}),  # 上市相关
-
         "stock_fhps_detail_em": (ak.stock_fhps_detail_em, {}),  # 分红配送详细信息
         "stock_fhps_detail_ths": (ak.stock_fhps_detail_ths, {}),  # 同花顺分红详细信息
+        # 巨潮资讯-首页-公告查询-信息披露公告  这个是遍历+简单参数
+        "stock_zh_a_disclosure_report_cninfo": (ak.stock_zh_a_disclosure_report_cninfo,
+                                                {"market": "沪深京", "category": "公司治理",
+                                                 "start_date": f"{begin_date}", "end_date": f"{end_date}"}),  # 信息披露公告
+        # 巨潮资讯-首页-数据-预约披露调研 遍历+简单参数
+        "stock_zh_a_disclosure_relation_cninfo": (ak.stock_zh_a_disclosure_relation_cninfo,
+                                                  {"market": "沪深京", "start_date": f"{begin_date}",
+                                                   "end_date": f"{end_date}"}),  # 信息披露调研
         # 遍历历史记录
         # symbol – 股票代码
         # indicator – choice of {"总市值", "市盈率(TTM)", "市盈率(静)", "市净率", "市现率"}
         # period – choice of {"近一年", "近三年", "近五年", "近十年", "全部"}
         "stock_zh_valuation_baidu_zsz_1y": (
             ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "近一年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_zsz_3y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "近三年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_zsz_5y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "近五年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_zsz_10y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "近十年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_zsz_all": (
-            ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "全部"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_zsz_3y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "近三年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_zsz_5y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "近五年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_zsz_10y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "近十年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_zsz_all": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "总市值", "period": "全部"}),  # 实时，深沪
         "stock_zh_valuation_baidu_pe_ttm_1y": (
             ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近一年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pe_ttm_3y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近三年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pe_ttm_5y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近五年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pe_ttm_10y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近十年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pe_ttm_all": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "全部"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pe_ttm_3y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近三年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pe_ttm_5y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近五年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pe_ttm_10y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近十年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pe_ttm_all": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "全部"}),  # 实时，深沪
         "stock_zh_valuation_baidu_pe_static_1y": (
             ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "近一年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pe_static_3y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "近三年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pe_static_5y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "近五年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pe_static_10y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "近十年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pe_static_all": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "全部"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pe_static_3y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "近三年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pe_static_5y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "近五年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pe_static_10y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "近十年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pe_static_all": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市盈率(静)", "period": "全部"}),  # 实时，深沪
         "stock_zh_valuation_baidu_pb_1y": (
             ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "近一年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pb_3y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "近三年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pb_5y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "近五年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pb_10y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "近十年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_pb_all": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "全部"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pb_3y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "近三年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pb_5y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "近五年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pb_10y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "近十年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_pb_all": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市净率", "period": "全部"}),  # 实时，深沪
         "stock_zh_valuation_baidu_ps_1y": (
             ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "近一年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_ps_3y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "近三年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_ps_5y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "近五年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_ps_10y": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "近十年"}),  # 实时，深沪
-        "stock_zh_valuation_baidu_ps_all": (
-            ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "全部"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_ps_3y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "近三年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_ps_5y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "近五年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_ps_10y": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "近十年"}),  # 实时，深沪
+        # "stock_zh_valuation_baidu_ps_all": (
+        #     ak.stock_zh_valuation_baidu, {"indicator": "市现率", "period": "全部"}),  # 实时，深沪
     }
     api_sz = {  # 深A
         "stock_share_hold_change_szse": (ak.stock_share_hold_change_szse, {}),  # 深圳
@@ -179,84 +191,103 @@ def call_func_traversal(basic_name, begin_date, end_date, id, base_path='./stock
         "stock_hk_fhpx_detail_ths": (ak.stock_hk_fhpx_detail_ths, {}),
         "stock_hk_valuation_baidu_zsz_1y": (
             ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "近一年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_zsz_3y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "近三年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_zsz_5y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "近五年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_zsz_10y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "近十年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_zsz_all": (
-            ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "全部"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_zsz_3y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "近三年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_zsz_5y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "近五年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_zsz_10y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "近十年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_zsz_all": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "总市值", "period": "全部"}),  # 实时，港股
         "stock_hk_valuation_baidu_pe_ttm_1y": (
             ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近一年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pe_ttm_3y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近三年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pe_ttm_5y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近五年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pe_ttm_10y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近十年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pe_ttm_all": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "全部"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pe_ttm_3y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近三年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pe_ttm_5y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近五年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pe_ttm_10y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "近十年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pe_ttm_all": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市盈率(TTM)", "period": "全部"}),  # 实时，港股
         "stock_hk_valuation_baidu_pe_static_1y": (
             ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "近一年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pe_static_3y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "近三年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pe_static_5y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "近五年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pe_static_10y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "近十年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pe_static_all": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "全部"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pe_static_3y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "近三年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pe_static_5y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "近五年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pe_static_10y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "近十年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pe_static_all": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市盈率(静)", "period": "全部"}),  # 实时，港股
         "stock_hk_valuation_baidu_pb_1y": (
             ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "近一年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pb_3y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "近三年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pb_5y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "近五年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pb_10y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "近十年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_pb_all": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "全部"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pb_3y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "近三年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pb_5y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "近五年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pb_10y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "近十年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_pb_all": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市净率", "period": "全部"}),  # 实时，港股
         "stock_hk_valuation_baidu_ps_1y": (
             ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "近一年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_ps_3y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "近三年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_ps_5y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "近五年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_ps_10y": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "近十年"}),  # 实时，港股
-        "stock_hk_valuation_baidu_ps_all": (
-            ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "全部"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_ps_3y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "近三年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_ps_5y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "近五年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_ps_10y": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "近十年"}),  # 实时，港股
+        # "stock_hk_valuation_baidu_ps_all": (
+        #     ak.stock_hk_valuation_baidu, {"indicator": "市现率", "period": "全部"}),  # 实时，港股
     }
-    api_traversal = api_szsh
-    sh_dict, sz_dict, H_dict = create_dict(get_H_dict=True)
-    total_interfaces = len(api_traversal)
-    for key, (func, params) in api_traversal.items():
-        if key in processed_interfaces:
-            # print(f"接口 {key} 在 {id}已处理，跳过 ")
-            continue
-        i += 1
-        # try:
-        print(f"Now is {key}")
-        stock_traversal_module(func=func, basic_name=key, stock_dict=sh_dict, flag=0, args=params, report_date=id)
-        stock_traversal_module(func=func, basic_name=key, stock_dict=sz_dict, flag=1, args=params, report_date=id)
-        # except Exception as e:
-        #     print(f"When getting {key}: Error: {str(e)}")
-        #     error_reports.append({"api_name": key, "error": str(e)})
-        #     if (i % 2 == 0):
-        #         save_to_json(error_reports, error_file)
-        #     continue
 
-        processed_interfaces.add(key)
-        # 定期保存中间结果和中断点
-        if i % 2 == 0 or i == total_interfaces:
-            save_to_json({"processed_interfaces": list(processed_interfaces)}, interrupt_file)
-            save_to_json(error_reports, error_file)
-            if (i % 10 == 0):
-                print(f"Progress: {i + 1}/{total_interfaces} interfaces processed.")
-    # 保存最终结果
-    save_to_json({"processed_interfaces": list(processed_interfaces)}, interrupt_file)
-    save_to_json(error_reports, error_file)
+    for i in range(4):
+        if i == 0:
+            api_traversal = api_szsh
+        elif i == 1:
+            api_traversal = api_sz
+        elif i == 2:
+            api_traversal = api_sh
+        elif i == 3:
+            api_traversal = api_h
 
 
-call_func_traversal(basic_name="traversal_test", begin_date="20240713", end_date="20240713",id="20240713")
+        sh_dict, sz_dict, H_dict = create_dict(get_H_dict=True)
+        total_interfaces = len(api_traversal)
+        for key, (func, params) in api_traversal.items():
+            if key in processed_interfaces:
+                # print(f"接口 {key} 在 {report_id}已处理，跳过 ")
+                continue
+
+            i += 1
+            # try:
+            print(f"Now is {key}")
+            if debug and keyboard.is_pressed('enter'):
+                print(f"继续按回车键1秒跳过接口：{basic_name}")
+                time.sleep(1)
+                if keyboard.is_pressed('enter'):
+                    print(f"强制跳过接口：{basic_name}")
+                    continue
+
+            stock_traversal_module(func=func, basic_name=key, stock_dict=sh_dict, flag=0, args=params, report_date=report_id)
+            stock_traversal_module(func=func, basic_name=key, stock_dict=sz_dict, flag=1, args=params, report_date=report_id)
+            # except Exception as e:
+            #     print(f"When getting {key}: Error: {str(e)}")
+            #     error_reports.append({"api_name": key, "error": str(e)})
+            #     if (i % 2 == 0):
+            #         save_to_json(error_reports, error_file)
+            #     continue
+
+            processed_interfaces.add(key)
+            # 定期保存中间结果和中断点
+            if i % 2 == 0 or i == total_interfaces:
+                save_to_json({"processed_interfaces": list(processed_interfaces)}, interrupt_file)
+                save_to_json(error_reports, error_file)
+                if (i % 10 == 0):
+                    print(f"Progress: {i + 1}/{total_interfaces} interfaces processed.")
+        # 保存最终结果
+        save_to_json({"processed_interfaces": list(processed_interfaces)}, interrupt_file)
+        save_to_json(error_reports, error_file)
+
+
+call_func_traversal(basic_name="traversal_test", begin_date="20240713", end_date="20240713",report_id="20240713")

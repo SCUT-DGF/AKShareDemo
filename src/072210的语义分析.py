@@ -5,19 +5,29 @@ import torch
 from transformers import BertTokenizer, BertForSequenceClassification
 from transformers import pipeline
 
-
-# 加载JSON文件
-def load_json(path):
-    """
-    从指定路径加载JSON文件
-    :param path: 文件路径
-    :return: dict或dataframe格式数据，读取失败返回空值。若要转dataframe可以用pd.DataFrame(~）
-    """
-    if os.path.exists(path):
-        with open(path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {}
-
+import os
+import json
+import numpy as np
+import pandas as pd
+import akshare as ak
+import inspect
+import keyboard
+import time
+from datetime import date, datetime, timedelta
+from basic_func import DateEncoder
+from basic_func import save_to_json
+from basic_func import save_to_json_v2
+from basic_func import load_json
+from basic_func import load_json_df
+from basic_func import get_yesterday
+from basic_func import processing_date
+from basic_func import find_latest_file
+from basic_func import find_latest_file_v2
+from basic_func import stock_traversal_module
+from basic_func import get_matching_h_stocks
+from basic_func import create_dict
+from basic_func import is_holiday
+from basic_func import is_weekend
 
 # 分割文本为指定长度的段落
 def split_text(text, tokenizer, max_length=510):
@@ -51,6 +61,22 @@ def analyze_sentiment(text_chunks, pipeline):
     return results
 
 
+def calculate_average_sentiment(sentiment_results):
+    total_score = 0
+    count = 0
+    for label, score in sentiment_results:
+        count += 1
+        if label.startswith('positive'):  # 正确解析积极情感标签
+            total_score += score
+        elif label.startswith('negative'):  # 正确解析消极情感标签
+            total_score -= score
+
+    average_score = total_score / count if count else 0
+    overall_sentiment = 'Positive' if average_score > 0 else 'Negative'
+
+    return overall_sentiment, abs(average_score)
+
+
 # 主程序
 if __name__ == "__main__":
     # 定义存放数据的文件夹路径
@@ -82,10 +108,18 @@ if __name__ == "__main__":
                 text_chunks = split_text(content, tokenizer)
                 sentiment_results = analyze_sentiment(text_chunks, sentiment_pipeline)
 
+                overall_sentiment, average_sentiment_score = calculate_average_sentiment(sentiment_results)
+
                 print(f"Date: {date}")
                 print(f"Title: {title}")
+                print(f"Overall Sentiment: {overall_sentiment}")
+                print(f"Average Score: {average_sentiment_score}")
                 for i, (sentiment_label, sentiment_score) in enumerate(sentiment_results):
                     print(f"Chunk {i + 1}:")
                     print(f"Sentiment: {sentiment_label}")
                     print(f"Score: {sentiment_score}")
                     print("-" * 50)
+
+
+
+
