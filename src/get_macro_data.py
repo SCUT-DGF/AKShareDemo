@@ -11,16 +11,16 @@ class DateEncoder(json.JSONEncoder):
             return obj.isoformat()
         return super(DateEncoder, self).default(obj)
 
-def get_macro_data(daily, monthly, yearly, output_folder='./macro_china'):
+def get_macro_data(daily, monthly, yearly, output_folder='./macro_data'):
     """
     获取宏观信息，前三个标识符是布尔值，True则获取，可以选择输入存储路径
-    :param daily: bool,True则获取每日更新信息
+    :param daily: bool,True则获取每日都会更新的历史信息（并不一定要提前获取）
     :param monthly: bool,True则获取月度更新信息（或季度信息）
     :param yearly: bool,True则获取年度更新信息
     :param output_folder: 存储路径，默认为'./macro_china'
     :return: 直接将获取到的宏观信息写入文件中
     """
-    def using_api(api_function, output_folder='./macro_china'):
+    def using_api(api_function, output_folder='./macro_data'):
         for api_name, api_func in api_functions.items():
             try:
                 # 调用API函数获取数据
