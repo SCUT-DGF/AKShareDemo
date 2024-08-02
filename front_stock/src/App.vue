@@ -1,18 +1,22 @@
 <template>
-  <FrontStock></FrontStock>
+  <div class="app">
+    <NavigationBar></NavigationBar>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-
-import FrontStock from './components/FrontStock.vue'
-
+import NavigationBar from "@/components/NavigationBar";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    FrontStock
-  }
-}
+    NavigationBar,
+  },
+};
 </script>
 
 <style>
+.app {
+  padding-top: 60px;
+}
 </style>
