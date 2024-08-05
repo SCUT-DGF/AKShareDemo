@@ -1,11 +1,11 @@
 # front_stock
 
-## Project setup
+## 下载所需包执行以下在front_stock中执行以下命令
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 执行以下命令启动网页
 ```
 npm run serve
 ```
