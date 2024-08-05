@@ -273,7 +273,7 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                 # print(latest_file_path_2)
                 data_df = pd.DataFrame(load_json(latest_file_path_2), index=[0])
                 if '总市值' in data_df.columns:
-                    market_cap_open = data_df.at[0, '总市值']  # 使用索引0获取数据，而不是字符串索引
+                    market_cap_open = data_df.at[0, '总市值']
                 else:
                     # 错误处理：找不到总市值列
                     # print(f"文件 {latest_file_path_2} 中缺少 '总市值' 列，无法获取正确的开盘总市值")

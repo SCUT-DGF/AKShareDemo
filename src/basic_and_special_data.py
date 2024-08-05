@@ -447,42 +447,6 @@ def search_date_lists(key, func, args, date_lists):
     return all_data
 
 
-
-api_dict = {
-    # 可单独调用
-    "stock_jgdy_tj_em": (ak.stock_jgdy_tj_em, {"date": "20180928"}),  # 机构调研统计接口 开始时间
-    "stock_jgdy_detail_em": (ak.stock_jgdy_detail_em, {"date": "20180928"}),  # 机构调研详细接口 开始时间
-
-    # 任意开市日期 已完成
-    "stock_tfp_em": (ak.stock_tfp_em, {"date": "20240426"}),  # 停复牌信息  # 开市日
-    "news_trade_notify_suspend_baidu": (ak.news_trade_notify_suspend_baidu, {"date": "20220513"}),  # 停复牌
-    "news_trade_notify_dividend_baidu": (ak.news_trade_notify_dividend_baidu, {"date": "20220916"}),  # 分红派息
-    "news_report_time_baidu": (ak.news_report_time_baidu, {"date": "20220514"}),  # 财报发行
-
-    # 指定特殊日期
-    "stock_gpzy_pledge_ratio_em": (ak.stock_gpzy_pledge_ratio_em, {"date": "20231020"}),  # 上市公司质押比例接口  指定交易日：未休市的周五  # 完成
-    "stock_sy_yq_em": (ak.stock_sy_yq_em, {"date": "20221231"}),  # 商誉减值预期明细  # 参考网站指定的数据日期 10年-23年12.31，24年3.31
-    "stock_sy_jz_em": (ak.stock_sy_jz_em, {"date": "20230331"}),  # 个股商誉减值明细  # 同上
-    "stock_sy_em": (ak.stock_sy_em, {"date": "20230331"}),  # 个股商誉明细  # 参考网站指定的数据日期
-    "stock_sy_hy_em": (ak.stock_sy_hy_em, {"date": "20230331"}),  # 行业商誉数据  # 参考网站指定的数据日期
-    "stock_analyst_rank_em": (ak.stock_analyst_rank_em, {"year": "2022"}),  # 分析师指数排行
-    "stock_report_disclosure_sz": (ak.stock_report_disclosure, {"market": "深市", "period": "2022年报"}),  # 预约披露 今年以前
-    "stock_report_disclosure_sh": (ak.stock_report_disclosure, {"market": "沪市", "period": "2022年报"}),  # 预约披露 今年以前
-
-    # 报表日期 已完成
-    "stock_zcfz_em": (ak.stock_zcfz_em, {"date": "20220331"}),  # 资产负债表  # choice of {"20200331", "20200630", "20200930", "20201231", "..."}; 从 20100331 开始
-    "stock_lrb_em": (ak.stock_lrb_em, {"date": "20220331"}),  # 利润表 报告期*3
-    "stock_xjll_em": (ak.stock_xjll_em, {"date": "20200331"}),  # 现金流量表
-    "stock_fhps_em": (ak.stock_fhps_em, {"date": "20231231"}),  # 分红配送  # date是分红配送报告期
-    "stock_yjkb_em": (ak.stock_yjkb_em, {"date": "20200331"}),  # 业绩快报 财报日期
-    "stock_yjyg_em": (ak.stock_yjyg_em, {"date": "20190331"}),  # 业绩预告 财报日期
-    "stock_yysj_em": (ak.stock_yysj_em, {"symbol": "沪深A股", "date": "20211231"}),  # 预约披露时间 报表日期
-}
-
-
-
-
-
 def call_date_range_integration(basic_name, begin_date, end_date, report_id, interrupt_file, processed_interfaces, base_path='./stock_data/stock_relative'):
     # 定义：加工日期，给不同的参数输入不同的日期
     api_dates = {  # 指定特殊日期
@@ -565,17 +529,6 @@ def call_date_range_v2(basic_name, dict, date_lists, type, report_id, interrupt_
     save_to_json({"processed_interfaces": list(processed_interfaces)}, interrupt_file)
     save_to_json(error_reports, error_file)
 
-
-import json
-import os
-import pandas as pd
-import akshare as ak
-from datetime import date, datetime, timedelta
-
-from basic_func import save_to_json
-from basic_func import save_to_json_v2
-from basic_func import find_latest_file
-from basic_func import load_json
 
 # 自定义序列化器
 class DateEncoder(json.JSONEncoder):
