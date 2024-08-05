@@ -44,9 +44,12 @@
         </el-col>
       </el-row>
 
-      <el-button type="primary" class="formInput" @click="fn">确定</el-button>
+      <el-button type="primary" class="formInput" @click="GetImg"
+        >确定</el-button
+      >
     </el-form>
     <hr />
+    <img :src="imageUrl" alt="" />
     <div>
       <canvas class="stockCanvas" height="600" width="600"></canvas>
     </div>
@@ -54,6 +57,7 @@
 </template>
 
 <script>
+import request from "@/utils/request";
 export default {
   name: "StockPriceTrend",
   data() {
@@ -68,45 +72,39 @@ export default {
       options: [],
       value: "",
       input: "",
-      formRules: {
-        datevalue: [{ required: true, message: "请输入", trigger: blur }],
-      },
+      imageUrl: "",
     };
   },
   methods: {
-    ChangeStock(query) {
+    async GetImg() {
+      const res = await request.get("/c336372b0efeb5d6e5c501dcdd71d81.png", {
+        responseType: "blob",
+      });
+      this.imageUrl = URL.createObjectURL(res);
+    },
+    async ChangeStock(query) {
       this.options = [];
       if (query !== "") {
-        fetch("/sh_a_stocks.json")
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            const list = data.map((obj) => {
-              return obj.代码 + "-" + obj.名称;
-            });
-            list.forEach((element) => {
-              if (element.includes(query)) {
-                const obj = { value: element.toString() };
-                this.options.push(obj);
-              }
-            });
-          });
-        fetch("/sz_a_stocks.json")
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            const list = data.map((obj) => {
-              return obj.代码 + "-" + obj.名称;
-            });
-            list.forEach((element) => {
-              if (element.includes(query)) {
-                const obj = { value: element.toString() };
-                this.options.push(obj);
-              }
-            });
-          });
+        const res1 = await request.get("/sh_a_stocks.json");
+        const list1 = res1.map((obj) => {
+          return obj.代码 + "-" + obj.名称;
+        });
+        list1.forEach((element) => {
+          if (element.includes(query)) {
+            const obj = { value: element.toString() };
+            this.options.push(obj);
+          }
+        });
+        const res2 = await request.get("/sz_a_stocks.json");
+        const list2 = res2.map((obj) => {
+          return obj.代码 + "-" + obj.名称;
+        });
+        list2.forEach((element) => {
+          if (element.includes(query)) {
+            const obj = { value: element.toString() };
+            this.options.push(obj);
+          }
+        });
       } else {
         this.options = [];
       }
