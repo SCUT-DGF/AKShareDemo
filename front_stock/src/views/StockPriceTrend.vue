@@ -1,7 +1,7 @@
 <template>
   <div>
     <hr />
-    <el-form class="timeForm" :rules="formRules">
+    <el-form class="timeForm">
       <div class="block">
         <span class="demonstration">选择日期</span>
         <el-date-picker
