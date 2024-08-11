@@ -8,7 +8,7 @@ import time
 import requests
 from get_stock_data import get_stock_data
 from get_stock_data import get_stock_data_H
-from get_daily_reports03debug import get_daily_reports
+from get_daily_reports04 import get_daily_reports
 # from get_stock_data_realtime import get_stock_data_realtime # 迭代合并到get_stock_data
 from get_company_relative_profile import get_company_relative_profiles
 from get_macro_data import get_macro_data
@@ -35,6 +35,7 @@ def is_weekend(date):
 def periodic_task(base_dir):
     i = 0
     filepath = os.path.join(base_dir, "company_data")
+    h_filepath = os.path.join(filepath, "H_stock")
     while True:
         now = datetime.now()
         current_date = datetime.now().strftime("%Y%m%d")
@@ -68,12 +69,12 @@ def periodic_task(base_dir):
             elif flag_hz:
                 get_stock_data(True, filepath)
             if flag_ah:
-                get_stock_data_H(False, filepath)
+                get_stock_data_H(False, h_filepath)
         else:
             if flag_hz:
                 get_stock_data(False, filepath)
             if flag_ah:
-                get_stock_data_H(False, filepath)
+                get_stock_data_H(False, h_filepath)
 
         # 更新计数器
         i = (i + 1) % 6
@@ -81,7 +82,8 @@ def periodic_task(base_dir):
         # 精确计算下一次休眠的时间
         if not flag_hz and not flag_ah:
             if "090000" <= current_time <= "093000":
-                next_action_time = now.replace(hour=9, minute=30, second=0, microsecond=0)
+                # 设为9:25，则会在开市前读取一次
+                next_action_time = now.replace(hour=9, minute=25, second=0, microsecond=0)
             elif "123000" <= current_time <= "130000":
                 next_action_time = now.replace(hour=13, minute=0, second=0, microsecond=0)
             elif current_time >= "160000":
@@ -125,7 +127,7 @@ def daily_task(base_dir):
         # 判断是否是15:00之后，并且确保一天只执行一次
         if now.hour >= 15 and (last_executed_date is None or last_executed_date != current_date):
             get_daily_reports(report_date=current_date, base_path=file_path)
-            get_company_relative_profiles()
+            # get_company_relative_profiles()
             last_executed_date = current_date
 
         # 休眠到下一个小时的整点
@@ -140,7 +142,8 @@ if __name__ == "__main__":
 
     is_local = True
     if is_local:
-        base_path = './stock_data'
+        # base_path = './stock_data'
+        base_path = 'E:/Project_storage/stock_data'
     else:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         parent_dir = os.path.dirname(current_dir)

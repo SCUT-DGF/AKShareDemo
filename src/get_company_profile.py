@@ -62,6 +62,9 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
         market = "沪A股"
         region = "sh"
 
+    report_date_str = report_date.replace("-", "").replace(":", "").replace(" ", "")
+    today_str = date.today().strftime("%Y%m%d")
+
     total_stocks = len(stock_dict)
 
     # for i, stock in tqdm(enumerate(stock_dict), total=total_stocks, desc=f"Processing stock from {region}"):
@@ -82,8 +85,6 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
                 continue
             company_name_safe = company_name.replace("*", "")  # 替换 * 字符
 
-            report_date_str = report_date.replace("-", "").replace(":", "").replace(" ", "")
-            today_str = date.today().strftime("%Y%m%d")
             # 写入的文件路径
             company_basic_profile_file = os.path.join(base_path, market, company_name_safe,
                                                       f"{company_name_safe}_company_basic_profiles.json")
@@ -139,15 +140,17 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
                     print(f"无法获取公司 {stock_name} 代码 {stock_code} 的上市相关-巨潮资讯，对应接口：ak.stock_ipo_summary_cninfo")
                     error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
                     continue
+                for col in stock_ipo_summary_cninfo_df.columns:
+                    if pd.api.types.is_datetime64_any_dtype(stock_ipo_summary_cninfo_df[col]):
+                        stock_ipo_summary_cninfo_df[col] = stock_ipo_summary_cninfo_df[col].apply(
+                            lambda x: x.isoformat() if pd.notnull(x) else None)
+                    elif pd.api.types.is_object_dtype(stock_ipo_summary_cninfo_df[col]):
+                        stock_ipo_summary_cninfo_df[col] = stock_ipo_summary_cninfo_df[col].astype(str)
+
                 issue_size = stock_ipo_summary_cninfo_df.at[0, '总发行数量']
                 issue_price = stock_ipo_summary_cninfo_df.at[0, '发行价格']
                 issue_date = stock_ipo_summary_cninfo_df.at[0, '上网发行日期']
-                stock_ipo_summary_cninfo_df.at[0, '招股公告日期'] = pd.to_datetime(
-                    stock_ipo_summary_cninfo_df.at[0, '招股公告日期'], unit='ms').strftime('%Y-%m-%d')
-                stock_ipo_summary_cninfo_df.at[0, '上网发行日期'] = pd.to_datetime(
-                    stock_ipo_summary_cninfo_df.at[0, '上网发行日期'], unit='ms').strftime('%Y-%m-%d')
-                stock_ipo_summary_cninfo_df.at[0, '上市日期'] = pd.to_datetime(
-                    stock_ipo_summary_cninfo_df.at[0, '上市日期'], unit='ms').strftime('%Y-%m-%d')
+
                 save_to_json_v2(stock_ipo_summary_cninfo_df, stock_ipo_summary_cninfo_filepath)
 
 
@@ -232,17 +235,17 @@ def get_company_basic_profiles(base_path='./stock_data/company_data', report_dat
     :param report_date 指定每日报告的日期，YYYYMMDD的str，默认是昨天；若非当日闭市隔次开市前读取，市盈率一定是错的（由实时数据读取得到）
     :return: 直接将每日报告写入公司文件夹。
     """
-    # # 读取沪A股和深A股的数据
-    # stock_sh_a_spot_em_df = ak.stock_sh_a_spot_em()
-    # stock_sz_a_spot_em_df = ak.stock_sz_a_spot_em()
+    # 读取沪A股和深A股的数据
+    stock_sh_a_spot_em_df = ak.stock_sh_a_spot_em()
+    stock_sz_a_spot_em_df = ak.stock_sz_a_spot_em()
+
+    # 提取沪A股的编号、名称和代码
+    sh_a_stocks = stock_sh_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
+    # 提取深A股的编号、名称和代码
+    sz_a_stocks = stock_sz_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
     #
-    # # 提取沪A股的编号、名称和代码
-    # sh_a_stocks = stock_sh_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
-    # # 提取深A股的编号、名称和代码
-    # sz_a_stocks = stock_sz_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
-    #
-    # save_to_json(sh_a_stocks, os.path.join(base_path, "sh_a_stocks.json"))
-    # save_to_json(sz_a_stocks, os.path.join(base_path, "sz_a_stocks.json"))
+    save_to_json(sh_a_stocks, os.path.join(base_path, "sh_a_stocks.json"))
+    save_to_json(sz_a_stocks, os.path.join(base_path, "sz_a_stocks.json"))
     sh_a_stocks = load_json(os.path.join(base_path, "sh_a_stocks.json"))
     sz_a_stocks = load_json(os.path.join(base_path, "sz_a_stocks.json"))
 
@@ -261,7 +264,9 @@ def get_company_basic_profiles(base_path='./stock_data/company_data', report_dat
     get_company_basic_profile(sh_a_stocks, base_path, processed_stocks, 0, report_date, interrupt_file)
     get_company_basic_profile(sz_a_stocks, base_path, processed_stocks, 1, report_date, interrupt_file)
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-base_path = os.path.join(parent_dir, 'data', 'stock_data')  # 数据文件的根目录
-get_company_basic_profiles(base_path=os.path.join(base_path, "company_data"), report_date="20240805")
+
+if __name__ == "__main__":
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    base_path = os.path.join(parent_dir, 'data', 'stock_data')  # 数据文件的根目录
+    get_company_basic_profiles(base_path=os.path.join(base_path, "company_data"), report_date="20240809")
