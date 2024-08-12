@@ -145,3 +145,4 @@ export default {
   padding: 0;
 }
 </style>
+<style lang="css"> .el-tooltip__popper{ max-width:50% } </style>
