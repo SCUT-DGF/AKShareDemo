@@ -33,7 +33,6 @@
           </el-option>
         </el-select>
       </div>
-
       <el-row class="inputdate">
         <el-col :span="8">
           <span class="demonstration">选择预测天数</span></el-col
@@ -43,7 +42,6 @@
           </el-input>
         </el-col>
       </el-row>
-
       <el-button type="primary" class="formInput" @click="GetImg"
         >确定</el-button
       >

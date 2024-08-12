@@ -122,7 +122,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import request from "@/utils/request";
 export default {
@@ -130,7 +129,6 @@ export default {
   data() {
     return {
       currentPage: 1, // 当前页码
-      // total: 9, // 总条数
       pageSize: 10, // 每页的数据条数
       tableData: [],
     };
@@ -152,7 +150,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 * {
   text-decoration: none;
