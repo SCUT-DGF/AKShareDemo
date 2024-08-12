@@ -126,6 +126,8 @@ def find_latest_file(base_directory, name_prefix, before_date=None, after_date=N
                         # 如果指定了 before_date 且文件日期不在 before_date 之前，则跳过
                         if before_date and date >= before_date:
                             continue
+                        if after_date and date < after_date:
+                            continue
                         if latest_date is None or date > latest_date:
                             latest_date = date
                             latest_file_path = os.path.join(root, file)
@@ -222,6 +224,76 @@ def find_latest_file_v2(base_directory, name_prefix, before_date=None, after_dat
 
     return latest_file_path
 
+
+def find_earliest_file(base_directory, name_prefix, targeted_date=None):
+    """
+    寻找并返回前缀符合，日期最早的文件路径
+    :param base_directory: 寻找文件的路径
+    :param name_prefix: 文件的前缀
+    :param targeted_date: 可选参数，形式为YYYYMMDD，输入后返回该日期的最早的文件
+    :return: 寻找到的前缀符合，日期最新的文件路径
+    """
+    earliest_file_path = None
+    latest_date = None
+    before_date = targeted_date
+    after_date = targeted_date
+
+    # 将 before_date 转换为 datetime 对象
+    if before_date:
+        try:
+            before_date = datetime.strptime(before_date, "%Y%m%d")
+        except ValueError:
+            raise ValueError("before_date must be in YYYYMMDD format")
+    if after_date:
+        try:
+            after_date = datetime.strptime(after_date, "%Y%m%d")
+        except ValueError:
+            raise ValueError("after_date must be in YYYYMMDD format")
+
+    for root, dirs, files in os.walk(base_directory):
+        for file in files:
+            if file.startswith(name_prefix):
+                # print(file)
+                # 解析文件名中的日期部分，假设日期格式为YYYYMMDD
+                try:
+                    date_str = file.split('_')[-2]
+                    # print(date_str)
+                    if not date_str[0].isdigit():
+                        date_str = file.split('_')[-1]
+                        date_str = date_str.split('.')[0]  # 时间部分去掉后缀
+                        # print(date_str)
+                        date = datetime.strptime(date_str, "%Y%m%d")
+                        # print(date)
+                        # 如果指定了 before_date 且文件日期不在 before_date 之前（不包括before_date），则跳过
+                        if before_date and date > before_date:
+                            continue
+                        if after_date and date < after_date:
+                            continue
+                        if latest_date is None or date > latest_date:
+                            latest_date = date
+                            earliest_file_path = os.path.join(root, file)
+                    else:
+                        date = datetime.strptime(date_str, "%Y%m%d")
+                        # print(date)
+                        # 如果指定了 before_date 且文件日期不在 before_date 之前，则跳过
+                        if before_date and date > before_date:
+                            continue
+                        if after_date and date < after_date:
+                            continue
+                        if latest_date is None or date > latest_date:
+                            latest_date = date
+                            latest_date_hms = datetime.strptime(file.split('_')[-1].split('.')[0], "%H%M%S")
+                            earliest_file_path = os.path.join(root, file)
+                        elif date == latest_date:
+                            date_hms = datetime.strptime(file.split('_')[-1].split('.')[0], "%H%M%S")
+                            if(date_hms < latest_date_hms):
+                                latest_date_hms = date_hms
+                                latest_date = date
+                                earliest_file_path = os.path.join(root, file)
+                except ValueError:
+                    continue
+
+    return earliest_file_path
 
 def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='./stock_data/company_data',
                            report_date=get_yesterday(), get_full_file=False, individual_file=True):

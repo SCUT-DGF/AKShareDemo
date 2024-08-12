@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import akshare as ak
 from datetime import date, datetime, timedelta
-
+from basic_func import find_earliest_file
 
 class DateEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -100,14 +100,15 @@ def find_latest_file_v2(base_directory, name_prefix, before_date=None, after_dat
 
     return latest_file_path
 
+
 def find_suitable_file(company_file, prefix, report_date):
-    latest_file_path = find_latest_file_v2(company_file, prefix,
-                                             report_date, report_date)
+    latest_file_path = find_latest_file_v2(company_file, prefix, report_date, report_date)
     if latest_file_path:
         df = pd.DataFrame(load_json(latest_file_path))
         return df
     else:
         return pd.DataFrame()
+
 
 def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file):
     """
@@ -121,9 +122,11 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
     :param stock_sz_a_spot_em_df: 深A股数据
     :return: 无返回值，直接写入文件并存储
     """
+    debug = True
+    today_str = date.today().strftime("%Y%m%d")
 
     daily_reports_file = os.path.join(base_path, f"daily_reports_{report_date}.json")
-    error_reports_file = os.path.join(base_path, f"error_reports_{report_date}.json")
+    error_reports_file = os.path.join(base_path, f"daily_reports_error{report_date}.json")
 
     daily_reports = load_json(daily_reports_file)
     error_reports = load_json(error_reports_file)
@@ -143,7 +146,9 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
         if stock_code in processed_stocks:
             # print(f"公司 {stock_name} 代码 {stock_code}已处理，跳过 ")
             continue
-
+        if debug:
+            if i > 300:
+                return
         # 获取历史行情数据
         try:
             # 先计算公司文件夹的路径，可封装
@@ -162,31 +167,6 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                                              f"{company_name_safe}_daily_report_{report_date_str}.json")
             os.makedirs(os.path.dirname(daily_report_file), exist_ok=True)
             company_file = os.path.join(base_path, market, company_name_safe)
-
-            # 暂时用前复权盖
-            # latest_file_path_3 = find_latest_file_v2(company_file, f"{company_name_safe}_stock_hist_",
-            #                                          report_date,report_date)
-            # if latest_file_path_3:
-            #     print(latest_file_path_3)
-            #     stock_hist_df = pd.DataFrame(load_json(latest_file_path_3), index=[0])
-            #
-            # else:
-            stock_hist_df = ak.stock_zh_a_hist(symbol=stock_code, period="daily", start_date=report_date,
-                                               end_date=report_date, adjust="qfq")
-            if stock_hist_df.empty:
-                print(f"无法获取公司 {stock_name} 代码 {stock_code} 的历史行情数据，对应接口：ak.stock_zh_a_hist")
-                error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
-                continue
-            # 正确定义日期类型
-            for col in stock_hist_df.columns:
-                if pd.api.types.is_datetime64_any_dtype(stock_hist_df[col]):
-                    stock_hist_df[col] = stock_hist_df[col].apply(
-                        lambda x: x.isoformat() if pd.notnull(x) else None)
-                elif pd.api.types.is_object_dtype(stock_hist_df[col]):
-                    stock_hist_df[col] = stock_hist_df[col].astype(str)
-            stock_hist_path = os.path.join(base_path, market, company_name_safe,
-                                           f"{company_name_safe}_stock_hist_{report_date_str}.json")
-            save_to_json_v2(stock_hist_df, stock_hist_path)
 
             # print("success1")
             # 获取个股信息
@@ -209,7 +189,19 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                 stock_individual_info_em_df.loc[stock_individual_info_em_df['item'] == '总股本', 'value'].values[0]
             total_stock = float(total_stock)
             # print("success2")
+
             # 提取今日市盈率和总市值（开盘和收盘）
+            # 总市值
+            earliest_file_path = find_earliest_file(company_file, f"{company_name_safe}_data_", report_date)
+            if earliest_file_path:
+                # print(earliest_file_path)
+                data_df = pd.DataFrame(load_json(earliest_file_path), index=[0])
+                if '总市值' in data_df.columns:
+                    market_cap_open = data_df.at[0, '总市值']  # 使用索引0获取数据，而不是字符串索引
+                else:
+                    market_cap_open = None
+            else:
+                market_cap_open = None
             # flag 1深 0沪
             if not flag:
                 # 这是沪A股的数据
@@ -223,7 +215,33 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                     stock_sz_a_spot_em_df.loc[stock_sz_a_spot_em_df['代码'] == stock_code, '市盈率-动态'].values[0]
                 market_cap_close = (
                     stock_sz_a_spot_em_df.loc[stock_sz_a_spot_em_df['代码'] == stock_code, '总市值'].values)[0]
+            if market_cap_open is None:
+                print("注意：使用闭盘总市值标注开盘总市值")
+                market_cap_open = market_cap_close  # 暂时直接附闭盘总市值
             # print("success3")
+
+            # 获取当日的历史股票信息
+            basic_prefix = "stock_hist"
+            stock_hist_df = find_suitable_file(company_file, f"{company_name_safe}_{basic_prefix}_",
+                                               report_date)
+            if stock_hist_df.empty:
+                stock_hist_df = ak.stock_zh_a_hist(symbol=stock_code, period="daily", start_date=report_date,
+                                                   end_date=report_date, adjust="qfq")
+            if stock_hist_df.empty:
+                print(f"无法获取公司 {stock_name} 代码 {stock_code} 的历史行情数据，对应接口：ak.stock_zh_a_hist")
+                error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
+                continue
+            # 正确定义日期类型
+            for col in stock_hist_df.columns:
+                if pd.api.types.is_datetime64_any_dtype(stock_hist_df[col]):
+                    stock_hist_df[col] = stock_hist_df[col].apply(
+                        lambda x: x.isoformat() if pd.notnull(x) else None)
+                elif pd.api.types.is_object_dtype(stock_hist_df[col]):
+                    stock_hist_df[col] = stock_hist_df[col].astype(str)
+            stock_hist_path = os.path.join(base_path, market, company_name_safe,
+                                           f"{company_name_safe}_stock_hist_{report_date_str}.json")
+            save_to_json_v2(stock_hist_df, stock_hist_path)
+
             if not stock_hist_df.empty:
                 open_price = stock_hist_df.at[0, '开盘']
                 close_price = stock_hist_df.at[0, '收盘']
@@ -254,33 +272,18 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
             # print("success4")
 
             # 尝试读取已有公司基本信息
-            latest_file_path_1 = find_latest_file_v2(company_file, f"{company_name_safe}_profile_")
+            company_profile_path = find_latest_file_v2(company_file, f"{company_name_safe}_profile_")
 
-            if latest_file_path_1:
+            if company_profile_path:
                 # print(latest_file_path_1)
-                profile_df = pd.DataFrame(load_json(latest_file_path_1), index=[0])
-                # company_fullname = profile_df.at['公司名称'][0]
-                company_fullname = profile_df.at[0, '公司名称']  # 使用索引0获取数据，而不是字符串索引
-                # company_fullname = stock_name
+                profile_df = pd.DataFrame(load_json(company_profile_path), index=[0])
+                company_fullname = profile_df.at[0, '公司名称']
             else:
                 # 错误处理
-                # 由于接口的高频调用限制，获取公司基本信息的接口给总计五千多次调到三分之一左右ip就被暂ban一天多了，该数据通过单独的程序获取
-                company_fullname = stock_name
-
-            # 总市值
-            latest_file_path_2 = find_latest_file_v2(company_file, f"{company_name_safe}_data_", report_date)
-            if latest_file_path_2:
-                # print(latest_file_path_2)
-                data_df = pd.DataFrame(load_json(latest_file_path_2), index=[0])
-                if '总市值' in data_df.columns:
-                    market_cap_open = data_df.at[0, '总市值']
-                else:
-                    # 错误处理：找不到总市值列
-                    # print(f"文件 {latest_file_path_2} 中缺少 '总市值' 列，无法获取正确的开盘总市值")
-                    market_cap_open = market_cap_close  # 暂时直接附闭盘总市值
-            else:
-                # 暂时的错误处理：给它附闭盘值
-                market_cap_open = market_cap_close
+                profile_df = ak.stock_profile_cninfo(symbol=stock_code)
+                save_to_json_v2(profile_df, os.path.join(company_file, f"{company_name_safe}_profile_{today_str}.json"))
+                company_fullname = profile_df.at[0, '公司名称']
+            # 尝试读取已有公司基本信息
 
             daily_report = {
                 "公司名称": company_fullname,
@@ -300,16 +303,18 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
             # 将每日报表保存为JSON文件
             save_to_json(daily_report, daily_report_file)
 
-            keys_to_convert = ["总股本","今日开盘股价", "今日收盘股价", "今日开盘总市值", "今日收盘总市值","今日涨跌","今日涨跌幅","今日收盘发行市盈率"]
-            for key in keys_to_convert:
-                if key in daily_report and isinstance(daily_report[key], (float, int)):
-                    if key == "总股本":
-                        daily_report[key] = int(daily_report[key])
-                    else:
-                        daily_report[key] = int(daily_report[key] * 100)
-
-            daily_report_file2 = os.path.join(base_path, market, company_name_safe,
-                                             f"adjusted_{company_name_safe}_daily_report_{report_date_str}.json")
+            # adjusted_daily_report = daily_report
+            # keys_to_convert = ["总股本","今日开盘股价", "今日收盘股价", "今日开盘总市值", "今日收盘总市值","今日涨跌","今日涨跌幅","今日收盘发行市盈率"]
+            # for key in keys_to_convert:
+            #     if key in adjusted_daily_report and isinstance(adjusted_daily_report[key], (float, int)):
+            #         if key == "总股本":
+            #             adjusted_daily_report[key] = int(adjusted_daily_report[key])
+            #         else:
+            #             adjusted_daily_report[key] = int(adjusted_daily_report[key] * 100)
+            #
+            # adjusted_daily_report_file2 = os.path.join(base_path, market, company_name_safe,
+            #                                  f"adjusted_{company_name_safe}_adjusted_daily_report_{report_date_str}.json")
+            # save_to_json(adjusted_daily_report, adjusted_daily_report_file2)
 
 
             # 记录已处理的股票
@@ -366,4 +371,19 @@ def get_daily_reports(base_path='./stock_data/company_data', report_date=get_yes
     get_daily_report(sz_a_stocks, base_path, processed_stocks, 1, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
 
 
-
+if __name__ == "__main__":
+    is_local = True
+    if is_local:
+        # base_path = './stock_data'
+        base_path = 'E:/Project_storage/stock_data'
+    else:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        base_path = os.path.join(parent_dir, 'data', 'stock_data')
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data'), exist_ok=True)
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/深A股'), exist_ok=True)
+        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
+        print(base_path)
+    base_path = os.path.join(base_path, "company_data")
+    get_daily_reports(base_path=base_path, report_date="20240809")

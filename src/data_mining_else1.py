@@ -7,7 +7,7 @@ import threading
 import time
 import requests
 
-from get_daily_reports03debug import get_daily_reports
+from get_daily_reports04 import get_daily_reports
 
 from get_news_cctv import fs_news_cctv
 from get_news_cctv import fs_multiple_news_cctv
@@ -55,34 +55,34 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
         print(base_path)
 
-        from get_news_cctv import fs_news_cctv
-        from get_news_cctv import fs_multiple_news_cctv
-        getting_news_cctv = True
-        from get_macro_data import get_macro_data
-        getting_macro_data = True
-
-        from basic_and_special_data import calling_func
-        getting_basic_data = True
-        getting_special_data = True
-
-        from get_company_profile import get_company_basic_profiles
-        from get_company_relative_profile import get_company_relative_profiles
-        getting_basic_profile = True
-        getting_relative_profile = True
-
-        from get_weekly_report_and_daily_up import get_weekly_reports
-        from get_weekly_report_and_daily_up import get_up_stock_interface
-        from get_weekly_report_and_daily_up import check_daily_up_interface
-        getting_weekly_reports = True
-        getting_up_stock = True
-        getting_check_up = True
-
         begin_date = "20240729"
         end_date = "20240801"
         report_id = "20240801"
         daily = True
         weekly = True
         monthly = True
+
+        from get_news_cctv import fs_news_cctv
+        from get_news_cctv import fs_multiple_news_cctv
+        from get_macro_data import get_macro_data
+        from basic_and_special_data import calling_func
+        from get_company_profile import get_company_basic_profiles
+        from get_company_relative_profile import get_company_relative_profiles
+        from get_weekly_report_and_daily_up import get_weekly_reports
+        from get_weekly_report_and_daily_up import get_up_stock_interface
+        from get_weekly_report_and_daily_up import check_daily_up_interface
+
+        getting_news_cctv = True if daily else false
+        getting_macro_data = True if monthly else fasle
+        getting_basic_data = True if weekly else false
+        getting_special_data = True if weekly else false
+        getting_basic_profile = True if weekly else false
+        getting_relative_profile = True if weekly else false
+        getting_weekly_reports = True if weekly else false
+        getting_up_stock = True if daily else false
+        getting_check_up = True if daily else false
+
+
         if getting_news_cctv:
             news_cctv_filepath = ""
             # 路径确定放在函数里了
