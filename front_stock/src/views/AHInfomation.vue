@@ -12,85 +12,98 @@
         prop="公司名称"
         label="公司名称"
         align="center"
-        width="70"
       >
       </el-table-column>
-      <el-table-column prop="A股简称" label="A股简称" align="center" width="80">
+      <el-table-column prop="总股本" label="总股本" align="center">
       </el-table-column>
       <el-table-column
-        prop="所属区域"
-        label="所属区域"
+        prop="A股简称"
+        label="A股简称"
         align="center"
-        show-overflow-tooltip
-      >
-      </el-table-column>
-      <el-table-column
-        prop="股票代码"
-        label="股票代码"
-        align="center"
-        width="75"
-      >
-      </el-table-column>
-      <el-table-column prop="主营业务" label="主营业务" align="center">
-      </el-table-column>
-      <el-table-column
-        prop="经营范围"
-        label="经营范围"
-        align="center"
-        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
-        prop="公司简介"
-        label="公司简介"
+        prop="A股股票代码"
+        label="A股股票代码"
         align="center"
-        show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column prop="总股本" label="总股本" align="center" width="80">
-      </el-table-column>
-      <el-table-column prop="发行量" label="发行量" align="center" width="60">
+      <el-table-column prop="A股今日开盘股价" label="A股今日开盘股价" align="center">
       </el-table-column>
       <el-table-column
-        prop="发行价格"
-        label="发行价格"
+        prop="A股今日收盘股价"
+        label="A股今日收盘股价"
         align="center"
-        width="60"
       >
       </el-table-column>
       <el-table-column
-        prop="发行日期"
-        label="发行日期"
+        prop="A股今日开盘总市值"
+        label="A股今日开盘总市值"
         align="center"
-        width="80"
+      >
+      </el-table-column>
+      <el-table-column prop="A股今日收盘总市值" label="A股今日收盘总市值" align="center">
+      </el-table-column>
+      <el-table-column prop="A股今日涨跌" label="A股今日涨跌" align="center">
+      </el-table-column>
+      <el-table-column
+        prop="A股今日涨跌幅"
+        label="A股今日涨跌幅"
+        align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="注册资本"
-        label="注册资本"
+        prop="A股今日收盘市盈率"
+        label="A股今日收盘市盈率"
         align="center"
-        width="80"
       >
       </el-table-column>
       <el-table-column
-        prop="成立日期"
-        label="成立日期"
+        prop="H股股票代码"
+        label="H股股票代码"
         align="center"
-        width="80"
       >
       </el-table-column>
       <el-table-column
-        prop="公司网址"
-        label="公司网址"
+        prop="H股今日开盘股价"
+        label="H股今日开盘股价"
         align="center"
-        width="80"
       >
       </el-table-column>
       <el-table-column
-        prop="公司邮箱"
-        label="公司邮箱"
+        prop="H股今日收盘股价"
+        label="H股今日收盘股价"
         align="center"
-        width="80"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="H股今日开盘总市值"
+        label="H股今日开盘总市值"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="H股今日收盘总市值"
+        label="H股今日收盘总市值"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="H股今日涨跌"
+        label="H股今日涨跌"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="H股今日涨跌幅"
+        label="H股今日涨跌幅"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="H股今日收盘市盈率"
+        label="H股今日收盘市盈率"
+        align="center"
       >
       </el-table-column>
     </el-table>
@@ -121,7 +134,7 @@ export default {
     };
   },
   async created() {
-    const res = await request.get("/company_basic_profiles_20240802.json");
+    const res = await request.get("/merge_up_ah_data_20240809.json");
     this.tableData = eval(res);
   },
   methods: {
@@ -145,4 +158,3 @@ export default {
   padding: 0;
 }
 </style>
-<style lang="css"> .el-tooltip__popper{ max-width:50% } </style>

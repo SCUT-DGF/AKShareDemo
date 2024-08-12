@@ -12,85 +12,50 @@
         prop="公司名称"
         label="公司名称"
         align="center"
-        width="70"
       >
       </el-table-column>
-      <el-table-column prop="A股简称" label="A股简称" align="center" width="80">
-      </el-table-column>
-      <el-table-column
-        prop="所属区域"
-        label="所属区域"
-        align="center"
-        show-overflow-tooltip
-      >
+      <el-table-column prop="A股简称" label="A股简称" align="center">
       </el-table-column>
       <el-table-column
         prop="股票代码"
         label="股票代码"
         align="center"
-        width="75"
       >
       </el-table-column>
-      <el-table-column prop="主营业务" label="主营业务" align="center">
+      <el-table-column prop="总股本" label="总股本" align="center">
       </el-table-column>
       <el-table-column
-        prop="经营范围"
-        label="经营范围"
+        prop="今日开盘股价"
+        label="今日开盘股价"
         align="center"
-        show-overflow-tooltip
-      >
-      </el-table-column>
-      <el-table-column
-        prop="公司简介"
-        label="公司简介"
-        align="center"
-        show-overflow-tooltip
-      >
-      </el-table-column>
-      <el-table-column prop="总股本" label="总股本" align="center" width="80">
-      </el-table-column>
-      <el-table-column prop="发行量" label="发行量" align="center" width="60">
-      </el-table-column>
-      <el-table-column
-        prop="发行价格"
-        label="发行价格"
-        align="center"
-        width="60"
       >
       </el-table-column>
       <el-table-column
-        prop="发行日期"
-        label="发行日期"
+        prop="今日收盘股价"
+        label="今日收盘股价"
         align="center"
-        width="80"
+      >
+      </el-table-column>
+      <el-table-column prop="今日开盘总市值" label="今日开盘总市值" align="center">
+      </el-table-column>
+      <el-table-column prop="今日收盘总市值" label="今日收盘总市值" align="center">
+      </el-table-column>
+      <el-table-column
+        prop="今日涨跌"
+        label="今日涨跌"
+        align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="注册资本"
-        label="注册资本"
+        prop="今日涨跌幅"
+        label="今日涨跌幅"
         align="center"
-        width="80"
       >
       </el-table-column>
       <el-table-column
-        prop="成立日期"
-        label="成立日期"
+        prop="今日收盘发行市盈率"
+        label="今日收盘发行市盈率"
         align="center"
-        width="80"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="公司网址"
-        label="公司网址"
-        align="center"
-        width="80"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="公司邮箱"
-        label="公司邮箱"
-        align="center"
-        width="80"
       >
       </el-table-column>
     </el-table>
@@ -112,7 +77,7 @@
 <script>
 import request from "@/utils/request";
 export default {
-  name: "CompanyInfomation",
+  name: "dailyReport",
   data() {
     return {
       currentPage: 1, // 当前页码
@@ -121,7 +86,7 @@ export default {
     };
   },
   async created() {
-    const res = await request.get("/company_basic_profiles_20240802.json");
+    const res = await request.get("/daily_reports_20240808.json");
     this.tableData = eval(res);
   },
   methods: {
@@ -145,4 +110,3 @@ export default {
   padding: 0;
 }
 </style>
-<style lang="css"> .el-tooltip__popper{ max-width:50% } </style>
