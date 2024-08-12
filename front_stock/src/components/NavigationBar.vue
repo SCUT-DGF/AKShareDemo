@@ -3,6 +3,9 @@
     <div class="title">基于机器学习的股票评估预测系统</div>
     <ul class="nav">
       <li><router-link to="/companyinfo">公司信息</router-link></li>
+      <li><router-link to="/dailyReport">每日报表</router-link></li>
+      <li><router-link to="/weeklyReport">每周报表</router-link></li>
+      <li><router-link to="/AHInfomation">AH股信息</router-link></li>
       <li><router-link to="/stockpricetrend">股价预测</router-link></li>
     </ul>
   </div>
