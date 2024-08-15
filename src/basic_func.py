@@ -56,13 +56,23 @@ def load_json_df(path):
     :return:dataframe格式数据，读取失败返回空dataframe。
     """
     if not path:
-        print("In load_json_df: Error: path is None or empty.")
+        # print("In load_json_df: Error: path is None or empty.")
         return pd.DataFrame()
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             return pd.DataFrame(json.load(f))
     return pd.DataFrame()
 
+def load_json_df_all_scalar(path):
+    if not path:
+        # print("load_json_df_all_scalar: Error: path is None or empty.")
+        return pd.DataFrame()
+
+    if os.path.exists(path):
+        with open(path, 'r', encoding='utf-8') as f:
+            # 将JSON对象转换为DataFrame，注意使用 [] 包围json.load(f)以避免错误
+            return pd.DataFrame([json.load(f)])
+    return pd.DataFrame()
 
 def get_yesterday():
     return (datetime.now() - timedelta(1)).strftime('%Y%m%d')
@@ -224,6 +234,13 @@ def find_latest_file_v2(base_directory, name_prefix, before_date=None, after_dat
 
     return latest_file_path
 
+def find_suitable_file(company_file, prefix, report_date):
+    latest_file_path = find_latest_file_v2(company_file, prefix, report_date, report_date)
+    if latest_file_path:
+        df = pd.DataFrame(load_json(latest_file_path))
+        return df
+    else:
+        return pd.DataFrame()
 
 def find_earliest_file(base_directory, name_prefix, targeted_date=None):
     """
@@ -459,12 +476,13 @@ def get_matching_h_stocks():
     return matching_stocks
 
 
-def create_dict(base_path='./stock_data/company_data', get_H_dict=True):
+def create_dict(base_path='./stock_data', get_H_dict=True):
     """
     :param base_path: 基本路径，默认为'./stock_data/company_data'。同样涉及到已有文件结构。
     :param get_H_dict: True同时获取H股词典，只留下深沪股市对应的股票，False则不获取
     :return: 直接将生成的字典写入基本路径内，名称为"sh_a_stocks.json"与"sz_a_stocks.json"；返回沪、深、港的字典
     """
+    company_base_path = os.path.join(base_path, "company_data")
     # 读取沪A股和深A股的数据，并构建词典并将词典与数据传递给子函数
     stock_sh_a_spot_em_df = ak.stock_sh_a_spot_em()
     stock_sz_a_spot_em_df = ak.stock_sz_a_spot_em()
@@ -472,8 +490,8 @@ def create_dict(base_path='./stock_data/company_data', get_H_dict=True):
     sh_a_stocks = stock_sh_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
     # 提取深A股的编号、名称和代码
     sz_a_stocks = stock_sz_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
-    save_to_json(sh_a_stocks, os.path.join(base_path, "sh_a_stocks.json"))
-    save_to_json(sz_a_stocks, os.path.join(base_path, "sz_a_stocks.json"))
+    save_to_json(sh_a_stocks, os.path.join(company_base_path, "sh_a_stocks.json"))
+    save_to_json(sz_a_stocks, os.path.join(company_base_path, "sz_a_stocks.json"))
 
     if get_H_dict:
         # 获取A+H股票字典
@@ -507,7 +525,7 @@ def create_dict(base_path='./stock_data/company_data', get_H_dict=True):
                     })
                 else:
                     break
-        save_to_json(matching_stocks, os.path.join(base_path, "szsh_H_stocks.json"))
+        save_to_json(matching_stocks, os.path.join(company_base_path, "szsh_H_stocks.json"))
     else:
         matching_stocks={}
     return sh_a_stocks, sz_a_stocks, matching_stocks
@@ -532,3 +550,12 @@ def is_holiday(date_str):
 
 def is_weekend(date):
     return date.weekday() >= 5  # 5: Saturday, 6: Sunday
+
+def load_config(config_path):
+    with open(config_path, 'r') as f:
+        return json.load(f)
+
+# 更新配置文件
+def update_config(config_path, config):
+    with open(config_path, 'w') as f:
+        json.dump(config, f, indent=4)

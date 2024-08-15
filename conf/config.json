@@ -1,0 +1,19 @@
+{
+    "base_path": "E:/Project_storage/stock_data",
+    "last_run_time": "2024-08-16T10:00:00",
+    "last_report_date": "2024-08-14",
+    "data_status": {
+        "this_week_data_retrieved": false,
+        "last_week_data_retrieved": true
+    },
+    "time_settings": {
+        "time_format": "ISO 8601",
+        "timezone": "UTC"
+    },
+    "config_version": "1.0",
+    "log_settings": {
+        "log_path": "E:/Project_storage/logs",
+        "log_level": "INFO",
+        "log_format": "%(asctime)s - %(levelname)s - %(message)s"
+    }
+}

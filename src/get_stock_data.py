@@ -205,7 +205,7 @@ def get_stock_data(new_dict=True, base_path="./stock_data/company_data"):
 
     # 存储每个公司的实时信息到单独的 JSON 文件
     save_company_data(stock_data, base_path)
-    save_company_realtime_data(stock_data, base_path)
+    # save_company_realtime_data(stock_data, base_path)
 
     print("stock_data函数操作完成。")
 

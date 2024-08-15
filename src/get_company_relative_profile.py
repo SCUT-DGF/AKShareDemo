@@ -209,7 +209,7 @@ def get_company_relative_profile(stock_dict, base_path, processed_stocks, flag, 
                 market = "沪A股"
             # 写入的文件路径
             company_relative_profile_file = os.path.join(base_path, market, company_name_safe,
-                                             f"{company_name_safe}_company_relative_profiles.json")
+                                             f"{company_name_safe}_company_relative_profile_{report_date}.json")
             os.makedirs(os.path.dirname(company_relative_profile_file), exist_ok=True)
             company_file = os.path.join(base_path, market, company_name_safe)
 

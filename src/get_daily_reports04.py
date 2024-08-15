@@ -122,7 +122,7 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
     :param stock_sz_a_spot_em_df: 深A股数据
     :return: 无返回值，直接写入文件并存储
     """
-    debug = True
+    debug = False
     today_str = date.today().strftime("%Y%m%d")
 
     daily_reports_file = os.path.join(base_path, f"daily_reports_{report_date}.json")
@@ -341,25 +341,26 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
         save_to_json(error_reports, error_reports_file)
 
 
-def get_daily_reports(base_path='./stock_data/company_data', report_date=get_yesterday()):
+def get_daily_reports(base_path="./stock_data", report_date=get_yesterday()):
     """
     在收盘后获取公司的每日报告，可以在开闭市的总市值与市盈率错误的情况下，读取非当日报告；但此时读取历史数据失败的错误不可接受
-    :param base_path: 基本路径，默认为'./stock_data/company_data'。同样涉及到已有文件结构。
+    :param company_base_path: 基本路径，默认为'./stock_data/company_data'。同样涉及到已有文件结构。
     :param report_date 指定每日报告的日期，YYYYMMDD的str，默认是昨天；若非当日闭市隔次开市前读取，市盈率一定是错的（由实时数据读取得到）
     :return: 直接将每日报告写入公司文件夹。
     """
-
+    print("now executing function get_daily_reports")
+    company_base_path = os.path.join(base_path, 'company_data')
     # 先更新一遍公司的词典
     stock_sh_a_spot_em_df = ak.stock_sh_a_spot_em()
     stock_sz_a_spot_em_df = ak.stock_sz_a_spot_em()
     sh_a_stocks = stock_sh_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
     sz_a_stocks = stock_sz_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
 
-    save_to_json(sh_a_stocks, os.path.join(base_path, "sh_a_stocks.json"))
-    save_to_json(sz_a_stocks, os.path.join(base_path, "sz_a_stocks.json"))
+    save_to_json(sh_a_stocks, os.path.join(company_base_path, "sh_a_stocks.json"))
+    save_to_json(sz_a_stocks, os.path.join(company_base_path, "sz_a_stocks.json"))
 
     # 加载中断点记录
-    interrupt_file = os.path.join(base_path, f'daily_reports_interrupt_{report_date}.json')
+    interrupt_file = os.path.join(company_base_path, f'daily_reports_interrupt_{report_date}.json')
     interrupt_data = load_json(interrupt_file)
     # Ensure interrupt_data is a dictionary
     if not isinstance(interrupt_data, dict):
@@ -367,8 +368,8 @@ def get_daily_reports(base_path='./stock_data/company_data', report_date=get_yes
     processed_stocks = set(interrupt_data.get('processed_stocks', []))
 
     # 生成沪A股和深A股的每日报表
-    get_daily_report(sh_a_stocks, base_path, processed_stocks, 0, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
-    get_daily_report(sz_a_stocks, base_path, processed_stocks, 1, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
+    get_daily_report(sh_a_stocks, company_base_path, processed_stocks, 0, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
+    get_daily_report(sz_a_stocks, company_base_path, processed_stocks, 1, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
 
 
 if __name__ == "__main__":
@@ -386,4 +387,4 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
         print(base_path)
     base_path = os.path.join(base_path, "company_data")
-    get_daily_reports(base_path=base_path, report_date="20240809")
+    get_daily_reports(company_base_path=base_path, report_date="20240809")

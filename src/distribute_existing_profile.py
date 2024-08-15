@@ -10,16 +10,6 @@ from tqdm import tqdm
 from basic_func import load_json_df
 from basic_func import save_to_json_v2
 
-# 获取现在的路径
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-base_path = os.path.join(parent_dir, 'data', 'stock_data')
-filepath = os.path.join(base_path, "company_profiles_20240702.json")
-
-load_json_df(filepath)
-# 通过A股简称反向放入各json文件
-# 但是还是涉及到沪深的分类，需要词典还是 company_data
-
 def unpack_company_data(create_folder=True):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
@@ -29,7 +19,8 @@ def unpack_company_data(create_folder=True):
     date_str = date_str.split('.')[0]
 
     os.makedirs(os.path.join(base_path), exist_ok=True)
-    data_path = os.path.join(base_path, "company_data")  # 存储文件所处的分支目录
+    # data_path = os.path.join(base_path, "company_data")  # 存储文件所处的分支目录
+    data_path = r"E:\Project_storage\stock_data\company_data"  # 存储文件所处的分支目录  调试自定义
     os.makedirs(data_path, exist_ok=True)
     os.makedirs(os.path.join(data_path, "深A股"), exist_ok=True)
     os.makedirs(os.path.join(data_path, "沪A股"), exist_ok=True)
@@ -76,5 +67,18 @@ def unpack_company_data(create_folder=True):
         company_df = pd.DataFrame([row])
         save_to_json_v2(company_df, filepath)
 
-unpack_company_data(create_folder=True)
+if __name__ == "__main__":
+    # 获取现在的路径
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    base_path = os.path.join(parent_dir, 'data', 'stock_data')
+    filepath = os.path.join(base_path, "company_profiles_20240702.json")
+
+    load_json_df(filepath)
+    unpack_company_data(create_folder=True)
+    # 通过A股简称反向放入各json文件
+    # 但是还是涉及到沪深的分类，需要词典还是 company_data
+
+
+
 

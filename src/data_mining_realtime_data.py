@@ -9,9 +9,15 @@ import requests
 from get_stock_data import get_stock_data
 from get_stock_data import get_stock_data_H
 from get_daily_reports04 import get_daily_reports
+from combine_hourly_daily_data import combine_hourly_daily_data
+from get_up_ah_report_data import get_up_ah_report_data
+from show_up_limit_reports import get_merge_zt_a_data
+from get_weekly_report_and_daily_up2 import check_daily_up_interface
+from basic_func import load_config, update_config
+
 # from get_stock_data_realtime import get_stock_data_realtime # 迭代合并到get_stock_data
-from get_company_relative_profile import get_company_relative_profiles
-from get_macro_data import get_macro_data
+# from get_company_relative_profile import get_company_relative_profiles
+# from get_macro_data import get_macro_data
 
 
 # 暂：24年的节假日列表，最好用外部API获取
@@ -32,7 +38,8 @@ def is_weekend(date):
     return date.weekday() >= 5  # 5: Saturday, 6: Sunday
 
 
-def periodic_task(base_dir):
+def periodic_task(base_dir, config_file_path):
+    print("periodic_task begins to run")
     i = 0
     filepath = os.path.join(base_dir, "company_data")
     h_filepath = os.path.join(filepath, "H_stock")
@@ -101,18 +108,42 @@ def periodic_task(base_dir):
         time.sleep(sleep_seconds)
 
 
-def hourly_task(base_dir):
+def other_daily_task(base_dir, report_date):
+    """
+    该分支能与每日报告并行
+    """
+    print("other_daily_task begins to run")
+    combine_hourly_daily_data(begin_date=report_date, end_date=report_date, base_path=base_dir,
+                              name_prefix_option={"realtime_data": True, "daily_report": False})
+    check_daily_up_interface(report_date, os.path.join(base_dir, "company_data"),True)
+
+def other_daily_task2(base_dir, report_date):
+    """
+    另起分支的原因是，它必须等每日报告生成完，要用到每日报告的数据......
+    """
+    get_up_ah_report_data(report_date, base_dir)
+
+def hourly_task(base_dir, config_file_path):
     while True:
         current_time = datetime.now()
         time.sleep(3600)  # 等待1小时
 
-def daily_task(base_dir):
-    # 只支持当天闭市后获取，若到了下一天请自行调用封装好的函数，输入昨天对于的YYYYMMDD的report_date
+
+def daily_task(base_dir, config_path):
+    """
+    只会在每天15:00开市运行，如果提前运行则会尝试获取昨天的相关报表（如果没获取的话）
+    """
     file_path = os.path.join(base_dir, "company_data")
-    last_executed_date = None
+    print("daily_task begins to run")
     while True:
+        # 读取配置文件
+        config = load_config(config_path)
+        # last_run_time = datetime.fromisoformat(config.get('last_run_time'))
+        last_report_date = datetime.fromisoformat(config.get('last_report_date')).date()
+
         now = datetime.now()
         current_date = now.strftime("%Y%m%d")
+        yesterday_date = (now - timedelta(days=1)).strftime("%Y%m%d")
 
         # 判断是否是节假日或周末
         if is_holiday(current_date) or is_weekend(now):
@@ -124,48 +155,98 @@ def daily_task(base_dir):
             time.sleep(sleep_seconds)
             continue
 
-        # 判断是否是15:00之后，并且确保一天只执行一次
-        if now.hour >= 15 and (last_executed_date is None or last_executed_date != current_date):
-            get_daily_reports(report_date=current_date, base_path=file_path)
-            # get_company_relative_profiles()
-            last_executed_date = current_date
+        # 判断是否是15:00之后，并且确保当天数据只获取一次
+        if now.hour >= 15 and last_report_date < now.date():
+            # 更新并获取当天的数据
+            parser_daily = argparse.ArgumentParser(
+                description="Fetch stock data and save to specified directory periodically.")
+            parser_daily.add_argument('--base_dir', type=str, default=base_dir,
+                                      help='Base directory to save the stock data')
+            parser_daily.add_argument('--report_date', type=str, default=current_date,
+                                      help='A targeted date for getting data')
+            args_daily = parser_daily.parse_args()
 
-        # 休眠到下一个小时的整点
-        next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
-        sleep_seconds = (next_hour - now).total_seconds()
+            task_thread = threading.Thread(target=other_daily_task, args=(args_daily.base_dir, args_daily.report_date))
+            task_thread.daemon = True
+            task_thread.start()
+
+            get_daily_reports(report_date=current_date, base_path=base_dir)
+
+            task_thread2 = threading.Thread(target=other_daily_task2, args=(args_daily.base_dir, args_daily.report_date))
+            task_thread2.daemon = True
+            task_thread2.start()
+
+            get_merge_zt_a_data(base_dir, current_date)
+            
+
+            # 更新配置文件
+            config['last_run_time'] = now.isoformat()
+            config['last_report_date'] = now.date().isoformat()
+            update_config(config_path, config)
+
+        # 判断是否在隔天开市前获取前一天的数据
+        elif now.hour < 9 and last_report_date < (now - timedelta(days=1)).date():
+            get_daily_reports(report_date=yesterday_date, base_path=base_dir)
+            combine_hourly_daily_data(begin_date=yesterday_date, end_date=yesterday_date, base_path=base_dir,
+                                      name_prefix_option={"realtime_data": True, "daily_report": False})
+            get_merge_zt_a_data(base_dir, yesterday_date)
+
+            # 更新配置文件
+            config['last_report_date'] = now.date().isoformat()
+            update_config(config_path, config)
+
+        # 直接休眠到下个15:00
+        target_time_today = now.replace(hour=15, minute=0, second=0, microsecond=0)
+        if now >= target_time_today:
+            # 如果当前时间已经过了目标时间，设定为明天的目标时间
+            target_time_today += timedelta(days=1)
+        sleep_seconds = (target_time_today - now).total_seconds()
         time.sleep(sleep_seconds)
 
 # def weekly_task(base_dir):
 
 
 if __name__ == "__main__":
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    config_file_path = os.path.join(project_root, 'conf', 'config.json')
+    data_dir_path = os.path.join(project_root, 'data')
+    # 读取配置文件
+    with open(config_file_path, 'r') as f:
+        config = json.load(f)
 
-    is_local = True
-    if is_local:
-        # base_path = './stock_data'
-        base_path = 'E:/Project_storage/stock_data'
+    use_config_base_path = True
+    if not use_config_base_path:
+        use_custom_path = True
+        if use_custom_path:
+            base_path = 'E:/Project_storage/stock_data'
+        else:
+            base_path = os.path.join(data_dir_path, 'stock_data')
+            os.makedirs(os.path.join(data_dir_path, 'stock_data'), exist_ok=True)
+            os.makedirs(os.path.join(data_dir_path, 'stock_data/company_data'), exist_ok=True)
+            os.makedirs(os.path.join(data_dir_path, 'stock_data/company_data/深A股'), exist_ok=True)
+            os.makedirs(os.path.join(data_dir_path, 'stock_data/company_data/沪A股'), exist_ok=True)
+            os.makedirs(os.path.join(data_dir_path, 'stock_data/company_data/H_stock'), exist_ok=True)
+        print(f"Now stock_data folder path is {base_path}")
+
+        config['base_path'] = base_path
+        # 将更新的配置写回到文件
+        with open(config_file_path, 'w') as f:
+            json.dump(config, f, indent=4)
     else:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        parent_dir = os.path.dirname(current_dir)
-        base_path = os.path.join(parent_dir, 'data', 'stock_data')
-        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
-        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data'), exist_ok=True)
-        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/深A股'), exist_ok=True)
-        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
-        print(base_path)
-
+        base_path = config['base_path']
+        print(f"Reading from config: stock_data folder path is {base_path}")
 
     parser = argparse.ArgumentParser(description="Fetch stock data and save to specified directory periodically.")
     parser.add_argument('--base_dir', type=str, default=base_path, help='Base directory to save the stock data')
-
+    parser.add_argument('--config_file', type=str, default=config_file_path, help='Path to the configuration file')
     args = parser.parse_args()
 
-    # 创建并启动后台线程
-    task_thread = threading.Thread(target=periodic_task, args=(args.base_dir,))
+    # 创建并启动获取时分数据的后台线程 注：开市日A股15:00闭市，H股16:00闭市
+    task_thread = threading.Thread(target=periodic_task, args=(args.base_dir, args.config_file,))
     task_thread.daemon = True
     task_thread.start()
-
-    daily_thread = threading.Thread(target=daily_task, args=(args.base_dir,))
+    # 创建并启动获取日度数据的后台线程 于每日A股闭市后开始运行
+    daily_thread = threading.Thread(target=daily_task, args=(args.base_dir, args.config_file,))
     daily_thread.daemon = True
     daily_thread.start()
 

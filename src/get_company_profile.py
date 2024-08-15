@@ -87,7 +87,7 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
 
             # 写入的文件路径
             company_basic_profile_file = os.path.join(base_path, market, company_name_safe,
-                                                      f"{company_name_safe}_company_basic_profiles.json")
+                                                      f"{company_name_safe}_company_basic_profile_{report_date}.json")
             os.makedirs(os.path.dirname(company_basic_profile_file), exist_ok=True)
             company_file = os.path.join(base_path, market, company_name_safe)
 
@@ -135,7 +135,7 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
                 issue_date = stock_ipo_summary_cninfo_df.at[0, '上网发行日期']
                 # issue_date = pd.to_datetime(stock_ipo_summary_cninfo_df.at[0, '上网发行日期'], unit='ms').strftime('%Y-%m-%d')
             else:
-                stock_ipo_summary_cninfo_df = ak.stock_ipo_summary_cninfo(symbol=stock_code)
+                stock_ipo_summary_cninfo_df = ak.stock_ipo_summary_cninfo(symbol=stock_code)  # 高频调用ban
                 if stock_ipo_summary_cninfo_df.empty:
                     print(f"无法获取公司 {stock_name} 代码 {stock_code} 的上市相关-巨潮资讯，对应接口：ak.stock_ipo_summary_cninfo")
                     error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
