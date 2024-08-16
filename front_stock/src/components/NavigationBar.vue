@@ -6,6 +6,7 @@
       <li><router-link to="/dailyReport">每日报表</router-link></li>
       <li><router-link to="/weeklyReport">每周报表</router-link></li>
       <li><router-link to="/AHInfomation">AH股信息</router-link></li>
+      <li><router-link to="/limitUpStock">涨停股票</router-link></li>
       <li><router-link to="/stockpricetrend">股价预测</router-link></li>
     </ul>
   </div>
@@ -51,6 +52,9 @@ export default {
   color: black;
 }
 .nav li a:hover {
+  color: turquoise;
+}
+.nav li a:focus {
   color: turquoise;
 }
 </style>
