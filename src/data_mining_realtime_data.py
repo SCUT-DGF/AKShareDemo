@@ -115,7 +115,7 @@ def other_daily_task(base_dir, report_date):
     print("other_daily_task begins to run")
     combine_hourly_daily_data(begin_date=report_date, end_date=report_date, base_path=base_dir,
                               name_prefix_option={"realtime_data": True, "daily_report": False})
-    check_daily_up_interface(report_date, os.path.join(base_dir, "company_data"),True)
+    check_daily_up_interface(report_date, base_dir, True)
 
 def other_daily_task2(base_dir, report_date):
     """
@@ -140,10 +140,13 @@ def daily_task(base_dir, config_path):
         config = load_config(config_path)
         # last_run_time = datetime.fromisoformat(config.get('last_run_time'))
         last_report_date = datetime.fromisoformat(config.get('last_report_date')).date()
+        fetching_data_date = datetime.fromisoformat(config.get('fetching_data_date')).date()
+        daily_reports_retrieved = config.get('daily_reports_retrieved')
 
         now = datetime.now()
         current_date = now.strftime("%Y%m%d")
         yesterday_date = (now - timedelta(days=1)).strftime("%Y%m%d")
+        # had_gotten_daily_reports = config.get("daily_reports_retrieved", False)
 
         # 判断是否是节假日或周末
         if is_holiday(current_date) or is_weekend(now):
@@ -155,44 +158,51 @@ def daily_task(base_dir, config_path):
             time.sleep(sleep_seconds)
             continue
 
+        parser_daily = argparse.ArgumentParser(
+            description="Fetch stock data and save to specified directory periodically.")
+        parser_daily.add_argument('--base_dir', type=str, default=base_dir,
+                                  help='Base directory to save the stock data')
+        parser_daily.add_argument('--report_date', type=str, default=current_date,
+                                  help='A targeted date for getting data')
+        args_daily = parser_daily.parse_args()
+
+        task_thread2 = threading.Thread(target=other_daily_task2,
+                                        args=(args_daily.base_dir, args_daily.report_date))
+        task_thread = threading.Thread(target=other_daily_task, args=(args_daily.base_dir, args_daily.report_date))
+        task_thread.daemon = True
+        task_thread2.daemon = True  # 都设为守护线程，即非守护线程结束时它不会阻止结束的退出，会立刻随之结束
+
         # 判断是否是15:00之后，并且确保当天数据只获取一次
         if now.hour >= 15 and last_report_date < now.date():
-            # 更新并获取当天的数据
-            parser_daily = argparse.ArgumentParser(
-                description="Fetch stock data and save to specified directory periodically.")
-            parser_daily.add_argument('--base_dir', type=str, default=base_dir,
-                                      help='Base directory to save the stock data')
-            parser_daily.add_argument('--report_date', type=str, default=current_date,
-                                      help='A targeted date for getting data')
-            args_daily = parser_daily.parse_args()
-
-            task_thread = threading.Thread(target=other_daily_task, args=(args_daily.base_dir, args_daily.report_date))
-            task_thread.daemon = True
             task_thread.start()
-
-            get_daily_reports(report_date=current_date, base_path=base_dir)
-
-            task_thread2 = threading.Thread(target=other_daily_task2, args=(args_daily.base_dir, args_daily.report_date))
-            task_thread2.daemon = True
+            if fetching_data_date == last_report_date and not daily_reports_retrieved:
+                get_daily_reports(report_date=current_date, base_path=base_dir)
+                config['daily_reports_retrieved'] = True
+                config['fetching_data_date'] = now.date().isoformat()
+                update_config(config_path, config)
             task_thread2.start()
-
             get_merge_zt_a_data(base_dir, current_date)
-            
 
             # 更新配置文件
             config['last_run_time'] = now.isoformat()
             config['last_report_date'] = now.date().isoformat()
+            config['daily_reports_retrieved'] = False
             update_config(config_path, config)
 
         # 判断是否在隔天开市前获取前一天的数据
         elif now.hour < 9 and last_report_date < (now - timedelta(days=1)).date():
-            get_daily_reports(report_date=yesterday_date, base_path=base_dir)
-            combine_hourly_daily_data(begin_date=yesterday_date, end_date=yesterday_date, base_path=base_dir,
-                                      name_prefix_option={"realtime_data": True, "daily_report": False})
-            get_merge_zt_a_data(base_dir, yesterday_date)
+            task_thread.start()
+            if fetching_data_date == last_report_date and not daily_reports_retrieved:
+                get_daily_reports(report_date=current_date, base_path=base_dir)
+                config['daily_reports_retrieved'] = True
+                config['fetching_data_date'] = (now - timedelta(days=1)).date().isoformat()
+                update_config(config_path, config)
+            task_thread2.start()
+            get_merge_zt_a_data(base_dir, current_date)
 
             # 更新配置文件
-            config['last_report_date'] = now.date().isoformat()
+            config['last_report_date'] = (now - timedelta(days=1)).date().isoformat()
+            config['daily_reports_retrieved'] = False
             update_config(config_path, config)
 
         # 直接休眠到下个15:00

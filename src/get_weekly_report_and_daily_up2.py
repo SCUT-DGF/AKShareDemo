@@ -482,14 +482,15 @@ def get_weekly_reports(date, report_date, company_base_path='./stock_data/compan
 
 # get_weekly_reports("20240726", "20240726")
 
-def check_daily_up_interface(date, company_base_path='./stock_data/company_data', creating_new_dict=True):
+def check_daily_up_interface(date, base_path='./stock_data', creating_new_dict=True):
     """
     调用check_daily_up接口
     :param date:
-    :param company_base_path:
+    :param base_path:
     :param creating_new_dict:
     :return:
     """
+    company_base_path = os.path.join(base_path, "company_data")
     func = ak.stock_zh_a_hist
     args = {
         'period': 'daily',
@@ -498,7 +499,7 @@ def check_daily_up_interface(date, company_base_path='./stock_data/company_data'
         'adjust': ''
     }
     if creating_new_dict:
-        exclude_new_stock_interface(date)   # 调用排除新股的接口，该结构会新建词典的
+        exclude_new_stock_interface(date, base_path)   # 调用排除新股的接口，该结构会新建词典的
         # 读取生成的新股文件
         sh_dict_path = os.path.join(company_base_path, "sh_a_stocks_excluding_new.json")
         sz_dict_path = os.path.join(company_base_path, "sz_a_stocks_excluding_new.json")
@@ -640,8 +641,8 @@ def exclude_new_stock(sh_dict, sz_dict, company_base_path='./stock_data/company_
     # print(filtered_sh_dict)
     # print(filtered_sz_dict)
 
-def exclude_new_stock_interface(date, company_base_path='./stock_data/company_data'):
-    sh_dict, sz_dict, h_dict = create_dict(company_base_path, False)
+def exclude_new_stock_interface(date, base_path='./stock_data'):
+    sh_dict, sz_dict, h_dict = create_dict(base_path, False)
     exclude_new_stock(sh_dict, sz_dict)
 
 
