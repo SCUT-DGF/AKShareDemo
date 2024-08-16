@@ -115,6 +115,9 @@ export default {
 .weeklynav li a:hover {
   color: turquoise;
 }
+.weeklynav li a:focus {
+  color: turquoise;
+}
 .eltable{
   padding-top: 60px;
 }

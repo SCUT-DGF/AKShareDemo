@@ -5,6 +5,7 @@ import StockPriceTrend from '@/views/StockPriceTrend'
 import dailyReport from '@/views/dailyReport'
 import weeklyReport from '@/views/weeklyReport'
 import AHInfomation from '@/views/AHInfomation'
+import limitUpStock from '@/views/limitUpStock'
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes: [
@@ -14,6 +15,7 @@ const router = new VueRouter({
         { path: '/weeklyReport', component: weeklyReport },
         { path: '/AHInfomation', component: AHInfomation },
         { path: '/dailyReport', component: dailyReport },
+        { path: '/limitUpStock', component: limitUpStock },
     ]
 })
 export default router
