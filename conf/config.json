@@ -1,12 +1,11 @@
 {
     "base_path": "E:/Project_storage/stock_data",
     "last_run_time": "2024-08-16T15:23:35.247315",
+    "last_weekly_report_date": "2024-08-16",
     "last_report_date": "2024-08-16",
     "data_status": {
         "fetching_data_date": "2024-08-16",
-        "daily_reports_retrieved": true,
-        "this_week_data_retrieved": false,
-        "last_week_data_retrieved": true
+        "daily_reports_retrieved": "True"
     },
     "time_settings": {
         "time_format": "ISO 8601",

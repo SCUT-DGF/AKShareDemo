@@ -465,7 +465,8 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, base_path='./stock_
         if not df_up_range10.empty:
             save_to_json_v2(df_up_range10, up_range10_file)
 
-def get_weekly_reports(date, report_date, company_base_path='./stock_data/company_data'):
+def get_weekly_reports(date, report_date, base_path='./stock_data'):
+    company_base_path = os.path.join(base_path, "company_data")
     # 输入日期，基本路径（存到./weekly_report文件夹中）
     begin_date, end_date = get_week_range(date)
     func = ak.stock_zh_a_hist
@@ -476,7 +477,7 @@ def get_weekly_reports(date, report_date, company_base_path='./stock_data/compan
         'end_date': end_date,
         'adjust': 'qfq'
     }
-    sh_dict, sz_dict, h_dict = create_dict(company_base_path,False)
+    sh_dict, sz_dict, h_dict = create_dict(base_path,False)
     get_weekly_report(func, "weekly_report", sh_dict, 1, args, company_base_path, report_date, individual_file=True)
     get_weekly_report(func, "weekly_report", sz_dict, 0, args, company_base_path, report_date, individual_file=True)
 

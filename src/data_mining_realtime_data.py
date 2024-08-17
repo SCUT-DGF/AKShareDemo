@@ -12,7 +12,8 @@ from get_daily_reports04 import get_daily_reports
 from combine_hourly_daily_data import combine_hourly_daily_data
 from get_up_ah_report_data import get_up_ah_report_data
 from show_up_limit_reports import get_merge_zt_a_data
-from get_weekly_report_and_daily_up2 import check_daily_up_interface
+from get_weekly_report_and_daily_up2 import check_daily_up_interface, get_weekly_reports
+
 from basic_func import load_config, update_config
 
 # from get_stock_data_realtime import get_stock_data_realtime # 迭代合并到get_stock_data
@@ -140,7 +141,7 @@ def daily_task(base_dir, config_path):
         config = load_config(config_path)
         # last_run_time = datetime.fromisoformat(config.get('last_run_time'))
         last_report_date = datetime.fromisoformat(config.get('last_report_date')).date()
-        fetching_data_date = datetime.fromisoformat(config.get('fetching_data_date')).date()
+        fetching_data_date = datetime.fromisoformat(config["data_status"]['fetching_data_date']).date()
         daily_reports_retrieved = config.get('daily_reports_retrieved')
 
         now = datetime.now()
@@ -178,7 +179,7 @@ def daily_task(base_dir, config_path):
             if fetching_data_date == last_report_date and not daily_reports_retrieved:
                 get_daily_reports(report_date=current_date, base_path=base_dir)
                 config['daily_reports_retrieved'] = True
-                config['fetching_data_date'] = now.date().isoformat()
+                config["data_status"]['fetching_data_date'] = now.date().isoformat()
                 update_config(config_path, config)
             task_thread2.start()
             get_merge_zt_a_data(base_dir, current_date)
@@ -195,7 +196,7 @@ def daily_task(base_dir, config_path):
             if fetching_data_date == last_report_date and not daily_reports_retrieved:
                 get_daily_reports(report_date=current_date, base_path=base_dir)
                 config['daily_reports_retrieved'] = True
-                config['fetching_data_date'] = (now - timedelta(days=1)).date().isoformat()
+                config["data_status"]['fetching_data_date'] = (now - timedelta(days=1)).date().isoformat()
                 update_config(config_path, config)
             task_thread2.start()
             get_merge_zt_a_data(base_dir, current_date)
@@ -213,7 +214,47 @@ def daily_task(base_dir, config_path):
         sleep_seconds = (target_time_today - now).total_seconds()
         time.sleep(sleep_seconds)
 
-# def weekly_task(base_dir):
+
+def weekly_task(base_dir, config_path):
+    """
+    任务将从本周一15:00开始，到下一周周五15:00之前都能获取本周的周报。
+    """
+    company_base_path = os.path.join(base_dir, "company_data")
+    print("weekly_task begins to run")
+    while True:
+        # 读取配置文件
+        config = load_config(config_path)
+        last_weekly_report_date = datetime.fromisoformat(config.get('last_weekly_report_date')).date()
+
+        now = datetime.now()
+        # current_date = now.strftime("%Y%m%d")
+        this_monday = now - timedelta(days=now.weekday())  # 本周一
+
+        this_friday_3pm = now + timedelta(days=(4 - now.weekday()), hours=(15 - now.hour), minutes=(-now.minute),
+                                          seconds=(-now.second))  # 本周五15点
+        this_friday = this_friday_3pm.date()
+        last_friday_3pm = this_friday_3pm - timedelta(weeks=1)  # 上周周五15点
+        last_friday = last_friday_3pm.date()
+
+        # 判断是否在获取数据的时间段内
+        if now >= this_monday:
+            if now >= this_friday_3pm:
+                if last_weekly_report_date < this_friday:
+                    # 获取本周的周报告
+                    get_weekly_reports(this_friday.strftime("%Y%m%d"), this_friday, base_dir)
+                    config['last_weekly_report_date'] = this_friday.strftime("%Y-%m-%d")  # 周报日期统一定义为对应周的周五
+                    update_config(config_path, config)
+            else:
+                if last_weekly_report_date < last_friday:
+                    get_weekly_reports(last_friday.strftime("%Y%m%d"), last_friday, base_dir)
+                    config['last_weekly_report_date'] = last_friday.strftime("%Y-%m-%d")  # 周报日期统一定义为对应周的周五
+                    update_config(config_path, config)
+
+        if now < this_friday_3pm:
+            sleep_seconds = (this_friday_3pm - now).total_seconds()
+        else:
+            sleep_seconds = (this_friday_3pm + timedelta(weeks=1) - now).total_seconds()
+        time.sleep(sleep_seconds)
 
 
 if __name__ == "__main__":
@@ -259,6 +300,10 @@ if __name__ == "__main__":
     daily_thread = threading.Thread(target=daily_task, args=(args.base_dir, args.config_file,))
     daily_thread.daemon = True
     daily_thread.start()
+
+    weekly_thread = threading.Thread(target=weekly_task, args=(args.base_dir, args.config_file,))
+    weekly_thread.daemon = True
+    weekly_thread.start()
 
     # 获取每日报表，先放这里
     # get_daily_reports(report_date='20230630')
