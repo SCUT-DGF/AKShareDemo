@@ -27,14 +27,13 @@ from get_weekly_report_and_daily_up2 import check_daily_up_interface
 
 
 def get_intersected_stocks(report_date, base_path="./stock_data"):
-    # 主要完成短期测试
-    # 所有文件路径定义：
+
     company_data_filepath = os.path.join(base_path, "company_data")
     weekly_report_filepath = os.path.join(company_data_filepath, "weekly_report")
     target_prefix_sz = "daily_up_report_up_stock_sz"
     target_prefix_sh = "daily_up_report_up_stock_sh"
 
-    matching_h_stocks_filepath = os.path.join(company_data_filepath,"H_stock","matching_h_stocks.json")
+    matching_h_stocks_filepath = os.path.join(company_data_filepath, "matching_h_stocks.json")
 
     sz_up_stock_filepath = find_latest_file_v2(weekly_report_filepath, target_prefix_sz, report_date, report_date)
     sh_up_stock_filepath = find_latest_file_v2(weekly_report_filepath, target_prefix_sh, report_date, report_date)
@@ -299,11 +298,11 @@ def format_date_form(df):
 
 
 def get_up_ah_report_data(report_date, base_path="./stock_data"):
-
-    company_path = os.path.join(base_path, "company_data")
+    print("Now executing function: get_up_ah_report_data")
+    company_base_path = os.path.join(base_path, "company_data")
     # report_date = "20240809"
 
-    check_daily_up_interface(date=report_date, company_path=company_path, creating_new_dict=True)
+    check_daily_up_interface(date=report_date, base_path=base_path, creating_new_dict=True)
     get_intersected_stocks(report_date=report_date, base_path=base_path)
     get_merge_up_ah_data(report_date=report_date, base_path=base_path)  # 魔改了的文件路径 company_data_filepath，可以直接注释对应行
 

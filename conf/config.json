@@ -1,10 +1,10 @@
 {
     "base_path": "E:/Project_storage/stock_data",
-    "last_run_time": "2024-08-16T15:23:35.247315",
+    "last_run_time": "2024-08-19T23:30:03.972661",
     "last_weekly_report_date": "2024-08-16",
-    "last_report_date": "2024-08-16",
+    "last_report_date": "2024-08-19",
     "data_status": {
-        "fetching_data_date": "2024-08-16",
+        "fetching_data_date": "2024-08-19",
         "daily_reports_retrieved": "True"
     },
     "time_settings": {
@@ -16,5 +16,6 @@
         "log_path": "E:/Project_storage/logs",
         "log_level": "INFO",
         "log_format": "%(asctime)s - %(levelname)s - %(message)s"
-    }
+    },
+    "daily_reports_retrieved": false
 }

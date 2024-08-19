@@ -72,9 +72,7 @@ def periodic_task(base_dir, config_file_path):
 
         # 每隔5次重新创建一次词典
         if i == 0:
-            if not flag_ah and flag_hz:
-                get_stock_data(True, filepath)
-            elif flag_hz:
+            if flag_hz:
                 get_stock_data(True, filepath)
             if flag_ah:
                 get_stock_data_H(False, h_filepath)
@@ -89,18 +87,18 @@ def periodic_task(base_dir, config_file_path):
 
         # 精确计算下一次休眠的时间
         if not flag_hz and not flag_ah:
-            if "090000" <= current_time <= "093000":
+            if "090000" <= current_time < "092500":
                 # 设为9:25，则会在开市前读取一次
                 next_action_time = now.replace(hour=9, minute=25, second=0, microsecond=0)
-            elif "123000" <= current_time <= "130000":
+            elif "123000" <= current_time < "130000":
                 next_action_time = now.replace(hour=13, minute=0, second=0, microsecond=0)
-            elif current_time >= "160000":
+            elif current_time > "160000":
                 next_action_time = (now + timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
                 # 下面这段需要is_holiday使用API，不然跨年就有可能错，不过有元旦节好像又没事了
                 while is_holiday(next_action_time.strftime("%Y%m%d")) or is_weekend(next_action_time):
                     next_action_time += timedelta(days=1)
             else:
-                next_action_time = now + timedelta(minutes=30)
+                next_action_time = now + timedelta(minutes=25)
         else:
             # 修改频率，请修改此处
             next_action_time = now + timedelta(minutes=5)
@@ -113,7 +111,7 @@ def other_daily_task(base_dir, report_date):
     """
     该分支能与每日报告并行
     """
-    print("other_daily_task begins to run")
+    print("other_daily_task begins to run \n")
     combine_hourly_daily_data(begin_date=report_date, end_date=report_date, base_path=base_dir,
                               name_prefix_option={"realtime_data": True, "daily_report": False})
     check_daily_up_interface(report_date, base_dir, True)
@@ -167,14 +165,16 @@ def daily_task(base_dir, config_path):
                                   help='A targeted date for getting data')
         args_daily = parser_daily.parse_args()
 
-        task_thread2 = threading.Thread(target=other_daily_task2,
-                                        args=(args_daily.base_dir, args_daily.report_date))
-        task_thread = threading.Thread(target=other_daily_task, args=(args_daily.base_dir, args_daily.report_date))
-        task_thread.daemon = True
-        task_thread2.daemon = True  # 都设为守护线程，即非守护线程结束时它不会阻止结束的退出，会立刻随之结束
+
 
         # 判断是否是15:00之后，并且确保当天数据只获取一次
         if now.hour >= 15 and last_report_date < now.date():
+            task_thread = threading.Thread(target=other_daily_task, args=(args_daily.base_dir, args_daily.report_date))
+            task_thread2 = threading.Thread(target=other_daily_task2,
+                                            args=(args_daily.base_dir, args_daily.report_date))
+            task_thread.daemon = True
+            task_thread2.daemon = True  # 都设为守护线程，即非守护线程结束时它不会阻止结束的退出，会立刻随之结束
+
             task_thread.start()
             if fetching_data_date == last_report_date and not daily_reports_retrieved:
                 get_daily_reports(report_date=current_date, base_path=base_dir)
@@ -192,14 +192,21 @@ def daily_task(base_dir, config_path):
 
         # 判断是否在隔天开市前获取前一天的数据
         elif now.hour < 9 and last_report_date < (now - timedelta(days=1)).date():
+            args_daily.report_date = yesterday_date
+            task_thread = threading.Thread(target=other_daily_task, args=(args_daily.base_dir, args_daily.report_date))
+            task_thread2 = threading.Thread(target=other_daily_task2,
+                                            args=(args_daily.base_dir, args_daily.report_date))
+            task_thread.daemon = True
+            task_thread2.daemon = True  # 都设为守护线程，即非守护线程结束时它不会阻止结束的退出，会立刻随之结束
+
             task_thread.start()
             if fetching_data_date == last_report_date and not daily_reports_retrieved:
-                get_daily_reports(report_date=current_date, base_path=base_dir)
+                get_daily_reports(report_date=yesterday_date, base_path=base_dir)
                 config['daily_reports_retrieved'] = True
                 config["data_status"]['fetching_data_date'] = (now - timedelta(days=1)).date().isoformat()
                 update_config(config_path, config)
             task_thread2.start()
-            get_merge_zt_a_data(base_dir, current_date)
+            get_merge_zt_a_data(base_dir, yesterday_date)
 
             # 更新配置文件
             config['last_report_date'] = (now - timedelta(days=1)).date().isoformat()
@@ -241,12 +248,12 @@ def weekly_task(base_dir, config_path):
             if now >= this_friday_3pm:
                 if last_weekly_report_date < this_friday:
                     # 获取本周的周报告
-                    get_weekly_reports(this_friday.strftime("%Y%m%d"), this_friday, base_dir)
+                    get_weekly_reports(this_friday.strftime("%Y%m%d"), this_friday.strftime("%Y%m%d"), base_dir)
                     config['last_weekly_report_date'] = this_friday.strftime("%Y-%m-%d")  # 周报日期统一定义为对应周的周五
                     update_config(config_path, config)
             else:
                 if last_weekly_report_date < last_friday:
-                    get_weekly_reports(last_friday.strftime("%Y%m%d"), last_friday, base_dir)
+                    get_weekly_reports(last_friday.strftime("%Y%m%d"), last_friday.strftime("%Y%m%d"), base_dir)
                     config['last_weekly_report_date'] = last_friday.strftime("%Y-%m-%d")  # 周报日期统一定义为对应周的周五
                     update_config(config_path, config)
 

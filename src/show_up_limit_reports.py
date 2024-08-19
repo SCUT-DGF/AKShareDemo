@@ -40,6 +40,7 @@ def merge_zt_a_data(stock_dict, processed_stocks, flag, report_date, interrupt_f
     :param report_date: 指定的日期
     :return: 无返回值，直接写入文件并存储
     """
+    print("Now executing function: merge_zt_a_data")
     if not existing_data:
         stock_sh_a_spot_em_df = ak.stock_sh_a_spot_em()
         stock_sz_a_spot_em_df = ak.stock_sz_a_spot_em()
