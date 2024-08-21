@@ -205,8 +205,6 @@ def merge_up_ah_data(stock_dict, processed_stocks, flag, report_date, interrupt_
                 raise ValueError(f"没有找到目标日期 {target_date} 的数据")
             h_pe_ratio_today = target_date_value.values[0]
 
-
-
             acquired_data = {
                 "公司名称": daily_report_row["公司名称"],
                 "总股本": daily_report_row["总股本"],  # 这是A股和H股共有的属性
@@ -329,8 +327,8 @@ if __name__ == "__main__":
     #     os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_data/weekly_report'), exist_ok=True)
 
     company_path = os.path.join(base_path, "company_data")
-    report_date = "20240809"
+    report_date = datetime.now().strftime("%Y%m%d")
 
-    check_daily_up_interface(date=report_date, company_path=company_path, creating_new_dict=True)
+    check_daily_up_interface(date=report_date, base_path=base_path, creating_new_dict=True)
     get_intersected_stocks(report_date=report_date, base_path=base_path)
     get_merge_up_ah_data(report_date=report_date, base_path=base_path)  # 魔改了的文件路径 company_data_filepath，可以直接注释对应行

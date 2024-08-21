@@ -11,7 +11,7 @@ from get_stock_data import get_stock_data_H
 from get_daily_reports04 import get_daily_reports
 from combine_hourly_daily_data import combine_hourly_daily_data
 from get_up_ah_report_data import get_up_ah_report_data
-from show_up_limit_reports import get_merge_zt_a_data
+from get_up_limit_reports import get_merge_zt_a_data
 from get_weekly_report_and_daily_up2 import check_daily_up_interface, get_weekly_reports
 
 from basic_func import load_config, update_config
@@ -104,6 +104,7 @@ def periodic_task(base_dir, config_file_path):
             next_action_time = now + timedelta(minutes=5)
 
         sleep_seconds = (next_action_time - now).total_seconds()
+        print(f"periodic_task: next_action_time is  {next_action_time.hour}:{next_action_time.minute}:{next_action_time.second}")
         time.sleep(sleep_seconds)
 
 

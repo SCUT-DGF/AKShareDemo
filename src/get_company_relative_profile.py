@@ -269,13 +269,15 @@ def get_company_relative_profile(stock_dict, base_path, processed_stocks, flag, 
         save_to_json(error_reports, error_reports_file)
 
 
-def get_company_relative_profiles(base_path='./stock_data/company_data', report_date=get_yesterday()):
+def get_company_relative_profiles(base_path='./stock_data', report_date=get_yesterday()):
     """
     在收盘后获取公司的每日报告，可以在开闭市的总市值与市盈率错误的情况下，读取非当日报告；但此时读取历史数据失败的错误不可接受
     :param base_path: 基本路径，默认为'./stock_data/company_data'。同样涉及到已有文件结构。
     :param report_date 指定每日报告的日期，YYYYMMDD的str，默认是昨天；若非当日闭市隔次开市前读取，市盈率一定是错的（由实时数据读取得到）
     :return: 直接将每日报告写入公司文件夹。
     """
+    base_company_path = os.path.join(base_path, "company_data")
+
     # 读取沪A股和深A股的数据
     stock_sh_a_spot_em_df = ak.stock_sh_a_spot_em()
     stock_sz_a_spot_em_df = ak.stock_sz_a_spot_em()
@@ -285,14 +287,14 @@ def get_company_relative_profiles(base_path='./stock_data/company_data', report_
     # 提取深A股的编号、名称和代码
     sz_a_stocks = stock_sz_a_spot_em_df[['序号', '名称', '代码']].drop_duplicates().to_dict(orient='records')
 
-    save_to_json(sh_a_stocks, os.path.join(base_path, "sh_a_stocks.json"))
-    save_to_json(sz_a_stocks, os.path.join(base_path, "sz_a_stocks.json"))
+    save_to_json(sh_a_stocks, os.path.join(base_company_path, "sh_a_stocks.json"))
+    save_to_json(sz_a_stocks, os.path.join(base_company_path, "sz_a_stocks.json"))
 
     # # 指定日期
     # report_date = get_yesterday()
 
     # 加载中断点记录
-    interrupt_file = os.path.join(base_path, f'company_relative_profiles_interrupt_{report_date}.json')
+    interrupt_file = os.path.join(base_company_path, f'company_relative_profiles_interrupt_{report_date}.json')
     interrupt_data = load_json(interrupt_file)
     # Ensure interrupt_data is a dictionary
     if not isinstance(interrupt_data, dict):
@@ -300,9 +302,39 @@ def get_company_relative_profiles(base_path='./stock_data/company_data', report_
     processed_stocks = set(interrupt_data.get('processed_stocks', []))
 
     # 生成沪A股和深A股的每日报表
-    get_company_relative_profile(sh_a_stocks, base_path, processed_stocks, 0, report_date, stock_sh_a_spot_em_df,
+    get_company_relative_profile(sh_a_stocks, base_company_path, processed_stocks, 0, report_date, stock_sh_a_spot_em_df,
                                  stock_sz_a_spot_em_df, interrupt_file)
-    get_company_relative_profile(sz_a_stocks, base_path, processed_stocks, 1, report_date, stock_sh_a_spot_em_df,
+    get_company_relative_profile(sz_a_stocks, base_company_path, processed_stocks, 1, report_date, stock_sh_a_spot_em_df,
                                  stock_sz_a_spot_em_df, interrupt_file)
 
 
+if __name__ == "__main__":
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    config_file_path = os.path.join(project_root, 'conf', 'config.json')
+    data_dir_path = os.path.join(project_root, 'data')
+    # 读取配置文件
+    with open(config_file_path, 'r') as f:
+        config = json.load(f)
+
+    use_config_base_path = True
+    if not use_config_base_path:
+        use_custom_path = True
+        if use_custom_path:
+            base_path = 'E:/Project_storage/stock_data'
+        else:
+            base_path = os.path.join(data_dir_path, 'stock_data')
+            os.makedirs(os.path.join(data_dir_path, 'stock_data'), exist_ok=True)
+            os.makedirs(os.path.join(data_dir_path, 'stock_data/company_data'), exist_ok=True)
+            os.makedirs(os.path.join(data_dir_path, 'stock_data/company_data/深A股'), exist_ok=True)
+            os.makedirs(os.path.join(data_dir_path, 'stock_data/company_data/沪A股'), exist_ok=True)
+        print(f"Now stock_data folder path is {base_path}")
+
+        config['base_path'] = base_path
+        # 将更新的配置写回到文件
+        with open(config_file_path, 'w') as f:
+            json.dump(config, f, indent=4)
+    else:
+        base_path = config['base_path']
+        print(f"Reading from config: stock_data folder path is {base_path}")
+
+    get_company_relative_profiles(base_path, datetime.now().strftime("%Y%m%d"))

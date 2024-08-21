@@ -13,7 +13,7 @@ from get_news_cctv import fs_news_cctv
 from get_news_cctv import fs_multiple_news_cctv
 from get_macro_data import get_macro_data
 
-from basic_and_special_data import calling_func
+from get_basic_and_special_data import calling_func
 
 from get_company_profile import get_company_basic_profiles
 from get_company_relative_profile import get_company_relative_profiles
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         from get_news_cctv import fs_news_cctv
         from get_news_cctv import fs_multiple_news_cctv
         from get_macro_data import get_macro_data
-        from basic_and_special_data import calling_func
+        from get_basic_and_special_data import calling_func
         from get_company_profile import get_company_basic_profiles
         from get_company_relative_profile import get_company_relative_profiles
         from get_weekly_report_and_daily_up2 import get_weekly_reports

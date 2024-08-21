@@ -114,6 +114,32 @@ def fs_multiple_news_cctv(start_date, end_date):
 
 
 if __name__ == "__main__":
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    config_file_path = os.path.join(project_root, 'conf', 'config.json')
+    data_dir_path = os.path.join(project_root, 'data')
+    # 读取配置文件
+    with open(config_file_path, 'r') as f:
+        config = json.load(f)
+
+    use_config_base_path = True
+    if not use_config_base_path:
+        use_custom_path = True
+        if use_custom_path:
+            base_path = 'E:/Project_storage/stock_data'
+        else:
+            base_path = os.path.join(data_dir_path, 'stock_data')
+            os.makedirs(os.path.join(data_dir_path, 'stock_data'), exist_ok=True)
+            os.makedirs(os.path.join(data_dir_path, 'stock_data/news_cctv'), exist_ok=True)
+        print(f"Now stock_data folder path is {base_path}")
+
+        config['base_path'] = base_path
+        # 将更新的配置写回到文件
+        with open(config_file_path, 'w') as f:
+            json.dump(config, f, indent=4)
+    else:
+        base_path = config['base_path']
+        print(f"Reading from config: stock_data folder path is {base_path}")
+
     # target_date = "20240424"  # 替换为你希望获取的具体日期
     # fs_news_cctv(target_date)
     start_date = "20240601"
