@@ -7,7 +7,7 @@ import threading
 import time
 import requests
 
-from get_daily_reports04 import get_daily_reports
+from get_daily_reports import get_daily_reports
 
 from get_news_cctv import fs_news_cctv
 from get_news_cctv import fs_multiple_news_cctv

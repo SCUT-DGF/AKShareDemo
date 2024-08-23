@@ -14,13 +14,15 @@ interrupt(中断处理文件)与error_report（错误报告，有但是前面没
 
 ### 展示的报表
 #### 公司每日报表
-模块定义于**get_daily_reports04.py**
+get_daily_reports模块定义于**get_daily_reports04.py**
 
 输出文件地址及命名含义
 $\qquad$**./stock_data/company_data**
 $\qquad\qquad$daily_reports_YYYYMMDD：包含指定日期已获取到的每日报表数据（原数据）
 $\qquad\qquad$daily_reports_interrupt_YYYYMMDD：用于记录中断，每处理10个股票就会写入一次，记录已处理的股票代码
 $\qquad\qquad$daily_reports_errorYYYYMMDD： 生成过程中出错的股票及错误原因。出错则直接跳过。
+
+注意：每日报表中的开盘总市值，需要在开市前获取时分数据。默认获取当日最早一次的时分数据中的总市值信息。如果没有任何当日的时分数据，会输出警告“使用闭市总市值赋值开市总市值”
 
 #### 公司一周报告（输出连续涨幅的股票列表）
 接口为**get_weekly_reports**，定义于**get_weekly_report_and_daily_up2.py**

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import akshare as ak
 import inspect
-import keyboard
+# import keyboard
 import time
 from datetime import date, datetime, timedelta
 from basic_func import DateEncoder
@@ -131,13 +131,13 @@ def get_weekly_report(func, basic_name, stock_dict, flag, args, base_path='./sto
         stock_code = stock['代码']
         stock_name = stock['名称']
 
-        # 为了方便调试，开启以下功能
-        if debug and keyboard.is_pressed('enter'):
-            print(f"继续按回车键1秒跳过接口：{basic_name}")
-            time.sleep(1)
-            if keyboard.is_pressed('enter'):
-                print(f"强制跳过接口：{basic_name}")
-                return
+        # # 为了方便调试，开启以下功能
+        # if debug and keyboard.is_pressed('enter'):
+        #     print(f"继续按回车键1秒跳过接口：{basic_name}")
+        #     time.sleep(1)
+        #     if keyboard.is_pressed('enter'):
+        #         print(f"强制跳过接口：{basic_name}")
+        #         return
         if debug and i >300:
             return
 
@@ -329,13 +329,13 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, company_base_path='
         stock_code = stock['代码']
         stock_name = stock['名称']
 
-        # 为了方便调试，开启以下功能
-        if debug and keyboard.is_pressed('enter'):
-            print(f"继续按回车键1秒跳过接口：{basic_name}")
-            time.sleep(1)
-            if keyboard.is_pressed('enter'):
-                print(f"强制跳过接口：{basic_name}")
-                return
+        # # 为了方便调试，开启以下功能
+        # if debug and keyboard.is_pressed('enter'):
+        #     print(f"继续按回车键1秒跳过接口：{basic_name}")
+        #     time.sleep(1)
+        #     if keyboard.is_pressed('enter'):
+        #         print(f"强制跳过接口：{basic_name}")
+        #         return
         if debug and i > 400:
             return
 
@@ -480,7 +480,9 @@ def get_weekly_reports(date, report_date, base_path='./stock_data'):
         'adjust': 'qfq'
     }
     sh_dict, sz_dict, h_dict = create_dict(base_path,False)
+    print("Now traversal sh_dict \n")
     get_weekly_report(func, "weekly_report", sh_dict, 1, args, company_base_path, report_date, individual_file=True)
+    print("Now traversal sz_dict \n")
     get_weekly_report(func, "weekly_report", sz_dict, 0, args, company_base_path, report_date, individual_file=True)
 
 # get_weekly_reports("20240726", "20240726")

@@ -8,7 +8,7 @@ import akshare as ak
 import inspect
 from datetime import date, datetime, timedelta
 
-import keyboard
+# import keyboard
 
 
 
@@ -327,7 +327,7 @@ def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='
     :param individual_file: bool类型，数据文件存储公司文件夹还是深沪A股的大文件夹，默认为True即存入公司文件夹
     :return: 无返回值，直接写入文件并存储
     """
-    debug = True
+    debug = False
     # report_date = "20240710" # 操作标识号，默认为昨天的日期
     # 加载中断点记录
     interrupt_file = os.path.join(base_path, f'{basic_name}_interrupt_{report_date}.json')
@@ -359,13 +359,13 @@ def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='
         stock_code = stock['代码']
         stock_name = stock['名称']
 
-        # 为了方便调试，开启以下功能
-        if debug and keyboard.is_pressed('enter'):
-            print(f"继续按回车键1秒跳过接口：{basic_name}")
-            time.sleep(1)
-            if keyboard.is_pressed('enter'):
-                print(f"强制跳过接口：{basic_name}")
-                return
+        # # 为了方便调试，开启以下功能
+        # if debug and keyboard.is_pressed('enter'):
+        #     print(f"继续按回车键1秒跳过接口：{basic_name}")
+        #     time.sleep(1)
+        #     if keyboard.is_pressed('enter'):
+        #         print(f"强制跳过接口：{basic_name}")
+        #         return
         if debug and i >300:
             return
 

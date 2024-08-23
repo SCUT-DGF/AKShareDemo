@@ -3,26 +3,15 @@ import json
 import numpy as np
 import pandas as pd
 import akshare as ak
-import inspect
-import keyboard
-import time
-from datetime import date, datetime, timedelta
-from basic_func import DateEncoder
+from datetime import datetime, timedelta
 from basic_func import save_to_json
 from basic_func import save_to_json_v2
 from basic_func import load_json
 from basic_func import load_json_df
 from basic_func import load_json_df_all_scalar
 from basic_func import get_yesterday
-from basic_func import processing_date
-from basic_func import find_latest_file
 from basic_func import find_latest_file_v2
-from basic_func import stock_traversal_module
-from basic_func import get_matching_h_stocks
-from basic_func import create_dict
-from basic_func import is_holiday
-from basic_func import is_weekend
-from get_daily_reports04 import get_daily_report
+from get_daily_reports import get_daily_report
 from get_weekly_report_and_daily_up2 import check_daily_up_interface
 
 
@@ -303,6 +292,7 @@ def get_up_ah_report_data(report_date, base_path="./stock_data"):
     check_daily_up_interface(date=report_date, base_path=base_path, creating_new_dict=True)
     get_intersected_stocks(report_date=report_date, base_path=base_path)
     get_merge_up_ah_data(report_date=report_date, base_path=base_path)  # 魔改了的文件路径 company_data_filepath，可以直接注释对应行
+
 
 if __name__ == "__main__":
 

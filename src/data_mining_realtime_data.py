@@ -8,7 +8,7 @@ import time
 import requests
 from get_stock_data import get_stock_data
 from get_stock_data import get_stock_data_H
-from get_daily_reports04 import get_daily_reports
+from get_daily_reports import get_daily_reports
 from combine_hourly_daily_data import combine_hourly_daily_data
 from get_up_ah_report_data import get_up_ah_report_data
 from get_up_limit_reports import get_merge_zt_a_data
