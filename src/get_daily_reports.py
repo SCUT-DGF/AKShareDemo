@@ -122,6 +122,7 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
     :param stock_sz_a_spot_em_df: 深A股数据
     :return: 无返回值，直接写入文件并存储
     """
+    frequency = 300
     debug = False
     today_str = date.today().strftime("%Y%m%d")
 
@@ -325,14 +326,21 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                 save_to_json(daily_reports, daily_reports_file)
                 save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
                 save_to_json(error_reports, error_reports_file)
-                if (i + 1) % 200 == 0 or i == total_stocks - 1:
+                if (i + 1) % frequency == 0 or i == total_stocks - 1:
                     print(f"This is {report_date}.")
-                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
 
 
         except Exception as e:
             print(f"Error processing stock {stock_code}: {e}")
             error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
+            if (i + 1) % 10 == 0 or i == total_stocks - 1:
+                save_to_json(daily_reports, daily_reports_file)
+                save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
+                save_to_json(error_reports, error_reports_file)
+                if (i + 1) % frequency == 0 or i == total_stocks - 1:
+                    print(f"This is {report_date}.")
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
             continue
 
         # 保存最终结果
@@ -368,8 +376,11 @@ def get_daily_reports(base_path="./stock_data", report_date=get_yesterday()):
     processed_stocks = set(interrupt_data.get('processed_stocks', []))
 
     # 生成沪A股和深A股的每日报表
+    print("Now traversal sh_a_stocks (daily_reports)")
     get_daily_report(sh_a_stocks, company_base_path, processed_stocks, 0, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
+    print("Now traversal sz_a_stocks (daily_reports)")
     get_daily_report(sz_a_stocks, company_base_path, processed_stocks, 1, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
+    print("Successfully executing function get_daily_reports")
 
 
 if __name__ == "__main__":

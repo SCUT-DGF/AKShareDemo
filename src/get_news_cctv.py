@@ -10,7 +10,7 @@ from basic_func import save_to_json_v2
 
 # 尝试：输出新闻稿，并且存入一个csv文件中
 
-def get_news_cctv(date, base_path):
+def get_news_cctv(date, base_path="stock_data"):
     """
     直接调用ak.news_cctv(date=date)接口，返回df并保存
     :param date:
@@ -30,11 +30,12 @@ def get_news_cctv(date, base_path):
 
     # 调用接口：
     news_cctv_df = ak.news_cctv(date=date)
-    save_to_json_v2(news_cctv_df,f'{base_path}/news_cctv_{date}.json')
+    save_to_json_v2(news_cctv_df, f'{base_path}/news_cctv_{date}.json')
 
     return news_cctv_df
 
-def fs_news_cctv(date, base_path):
+
+def fs_news_cctv(date, base_path="stock_data"):
     """
     fs: fetch and store
     宏观情报信息：新闻联播文字稿
@@ -65,7 +66,7 @@ def fs_news_cctv(date, base_path):
     if lower_bound > date_obj:
         raise ValueError("日期超过支持的最早日期，最早日期是20160330")
 
-    news_cctv_df = get_news_cctv(date)
+    news_cctv_df = get_news_cctv(date, base_path)
     # 转换为字典列表形式
     news_list = news_cctv_df.to_dict(orient='records')
     # 存储文件路径
@@ -82,18 +83,17 @@ def fs_news_cctv(date, base_path):
     return
 
 
-def fs_multiple_news_cctv(start_date, end_date):
-    debug = True
-    if debug:
-        base_path = "./news_cctv"
-    else:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        parent_dir = os.path.dirname(current_dir)
-        base_path = os.path.join(parent_dir, 'data', 'stock_data/news_cctv')
-        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
-        os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/news_cctv'), exist_ok=True)
-        print(base_path)
-
+def fs_multiple_news_cctv(start_date, end_date, base_path="stock_data"):
+    # debug = True
+    # if debug:
+    #     base_path = "./news_cctv"
+    # else:
+    #     current_dir = os.path.dirname(os.path.abspath(__file__))
+    #     parent_dir = os.path.dirname(current_dir)
+    #     base_path = os.path.join(parent_dir, 'data', 'stock_data/news_cctv')
+    #     os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
+    #     os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/news_cctv'), exist_ok=True)
+    #     print(base_path)
 
     # 将日期字符串转换为 datetime 对象
     start = datetime.strptime(start_date, "%Y%m%d")
@@ -108,7 +108,7 @@ def fs_multiple_news_cctv(start_date, end_date):
     while current_date <= end:
         # 将日期转换为字符串格式
         date_str = current_date.strftime("%Y%m%d")
-        fs_news_cctv(date_str,base_path)
+        fs_news_cctv(date_str, base_path)
         # 日期加1天，下一个循环中获取下一天的数据
         current_date += timedelta(days=1)
 

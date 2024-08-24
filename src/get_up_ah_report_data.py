@@ -73,6 +73,7 @@ def merge_up_ah_data(stock_dict, processed_stocks, flag, report_date, interrupt_
     :param report_date: 指定的日期
     :return: 无返回值，直接写入文件并存储
     """
+    frequency = 300
     if not existing_data:
         stock_sh_a_spot_em_df = ak.stock_sh_a_spot_em()
         stock_sz_a_spot_em_df = ak.stock_sz_a_spot_em()
@@ -229,11 +230,18 @@ def merge_up_ah_data(stock_dict, processed_stocks, flag, report_date, interrupt_
                 save_to_json(merge_up_ah_data, merge_up_ah_data_file)
                 save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
                 save_to_json(error_reports, error_reports_file)
-                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+                if (i + 1) % 300 == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
 
         except Exception as e:
             print(f"Error processing stock {stock_code}: {e}")
             error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
+            if (i + 1) % 10 == 0 or i == total_stocks - 1:
+                save_to_json(merge_up_ah_data, merge_up_ah_data_file)
+                save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
+                save_to_json(error_reports, error_reports_file)
+                if (i + 1) % 300 == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
             continue
 
         # 保存最终结果
@@ -249,6 +257,7 @@ def get_merge_up_ah_data(base_path='./stock_data', report_date=get_yesterday()):
     :param report_date 指定每日报告的日期，YYYYMMDD的str，默认是昨天
     :return:
     """
+    print("Now into function get_merge_up_ah_data \n")
 
     # # 指定日期
     # report_date = get_yesterday()
@@ -273,7 +282,7 @@ def get_merge_up_ah_data(base_path='./stock_data', report_date=get_yesterday()):
 
     merge_up_ah_data(sh_a_stocks, processed_stocks, 0, report_date, interrupt_file, company_data_filepath, False)
     merge_up_ah_data(sz_a_stocks, processed_stocks, 1, report_date, interrupt_file, company_data_filepath, False)
-
+    print("Successful executing function get_merge_up_ah_data \n")
 
 def format_date_form(df):
     for col in df.columns:
@@ -292,6 +301,7 @@ def get_up_ah_report_data(report_date, base_path="./stock_data"):
     check_daily_up_interface(date=report_date, base_path=base_path, creating_new_dict=True)
     get_intersected_stocks(report_date=report_date, base_path=base_path)
     get_merge_up_ah_data(report_date=report_date, base_path=base_path)  # 魔改了的文件路径 company_data_filepath，可以直接注释对应行
+    print("Successfully executing function get_up_ah_report_data")
 
 
 if __name__ == "__main__":

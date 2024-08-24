@@ -79,6 +79,7 @@ def get_weekly_report(func, basic_name, stock_dict, flag, args, base_path='./sto
     :param individual_file: bool类型，数据文件存储公司文件夹还是深沪A股的大文件夹，默认为True即存入公司文件夹
     :return: 无返回值，直接写入文件并存储
     """
+    frequency = 300
     debug = False
     # 加载中断点记录
     interrupt_file = os.path.join(base_path, f'{basic_name}_interrupt_{report_date}.json')
@@ -217,7 +218,8 @@ def get_weekly_report(func, basic_name, stock_dict, flag, args, base_path='./sto
                     save_to_json_v2(processed_data, data_file)
                 save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
                 save_to_json(error_reports, error_file)
-                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+                if (i + 1) % frequency == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
 
         except Exception as e:
             print(f"Error processing stock {stock_code}: {e}")
@@ -231,7 +233,8 @@ def get_weekly_report(func, basic_name, stock_dict, flag, args, base_path='./sto
                 save_to_json_v2(df_up_3_days, up_3_days_file)
                 save_to_json_v2(df_up_4_days, up_4_days_file)
                 save_to_json_v2(df_up_5_days, up_5_days_file)
-                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+                if (i + 1) % frequency == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
             continue
 
         # 保存最终结果
@@ -264,6 +267,7 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, company_base_path='
     :param individual_file: bool类型，数据文件存储公司文件夹还是深沪A股的大文件夹，默认为True即存入公司文件夹
     :return: 无返回值，直接写入文件并存储
     """
+    frequency = 300
     debug = False
     # 加载中断点记录
     interrupt_file = os.path.join(company_base_path, f'{basic_name}_interrupt_{report_date}.json')
@@ -425,7 +429,8 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, company_base_path='
                     save_to_json_v2(processed_data, data_file)
                 save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
                 save_to_json(error_reports, error_file)
-                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+                if (i + 1) % frequency == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
 
         except Exception as e:
             print(f"Error processing stock {stock_code}: {e}")
@@ -442,7 +447,8 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, company_base_path='
                 save_to_json_v2(df_up_range57, up_range57_file)
                 save_to_json_v2(df_up_range710, up_range710_file)
                 save_to_json_v2(df_up_range10, up_range10_file)
-                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+                if (i + 1) % frequency == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
             continue
 
         # 保存最终结果
@@ -468,6 +474,7 @@ def check_daily_up(func, basic_name, stock_dict, flag, args, company_base_path='
 
 
 def get_weekly_reports(date, report_date, base_path='./stock_data'):
+    print("Now executing function: get_weekly_reports")
     company_base_path = os.path.join(base_path, "company_data")
     # 输入日期，基本路径（存到./weekly_report文件夹中）
     begin_date, end_date = get_week_range(date)
@@ -484,7 +491,7 @@ def get_weekly_reports(date, report_date, base_path='./stock_data'):
     get_weekly_report(func, "weekly_report", sh_dict, 1, args, company_base_path, report_date, individual_file=True)
     print("Now traversal sz_dict \n")
     get_weekly_report(func, "weekly_report", sz_dict, 0, args, company_base_path, report_date, individual_file=True)
-
+    print("Successfully executing function get_weekly_reports")
 # get_weekly_reports("20240726", "20240726")
 
 def check_daily_up_interface(date, base_path='./stock_data', creating_new_dict=True):
@@ -530,7 +537,7 @@ def check_daily_up_interface(date, base_path='./stock_data', creating_new_dict=T
     get_limit_up_dict_v2(date, company_base_path)
     check_daily_up(func, "daily_up_report", sh_dict, 1, args, company_base_path, date, individual_file=True)
     check_daily_up(func, "daily_up_report", sz_dict, 0, args, company_base_path, date, individual_file=True)
-
+    print("Successfully executing function check_daily_up_interface")
 
 def get_limit_up_dict_v2(date, company_base_path='./stock_data/company_data', excluding=True, relative_path='weekly_report'):
     """

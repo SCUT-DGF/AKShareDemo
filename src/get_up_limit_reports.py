@@ -237,7 +237,7 @@ def get_merge_zt_a_data(base_path='./stock_data', report_date=get_yesterday()):
 
     merge_zt_a_data(stock_zt_sh, processed_stocks, 0, report_date, interrupt_file, company_data_filepath, False)
     merge_zt_a_data(stock_zt_sz, processed_stocks, 1, report_date, interrupt_file, company_data_filepath, False)
-
+    print("Successfully executing function get_merge_zt_a_data")
 
 def format_date_form(df):
     for col in df.columns:

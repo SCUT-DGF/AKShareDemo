@@ -37,10 +37,9 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
     :param processed_stocks: 中断处理使用，记录已处理的公司
     :param flag: 1表示深A股字典，0表示沪A股字典；内部需要使用不同接口
     :param report_date: 指定的日期
-    :param stock_sh_a_spot_em_df: 沪A股数据
-    :param stock_sz_a_spot_em_df: 深A股数据
     :return: 无返回值，直接写入文件并存储
     """
+    frequency = 300
     loading_prior = True  # 正常情况下，不会超频的接口会采取直接调用的形式
 
     company_basic_profiles_file = os.path.join(base_path, f"company_basic_profiles_{report_date}.json")
@@ -57,10 +56,10 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
 
     if flag:
         market = "深A股"
-        region = "sz"
+        # region = "sz"
     else:
         market = "沪A股"
-        region = "sh"
+        # region = "sh"
 
     report_date_str = report_date.replace("-", "").replace(":", "").replace(" ", "")
     today_str = date.today().strftime("%Y%m%d")
@@ -215,11 +214,18 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
                 save_to_json(company_basic_profiles, company_basic_profiles_file)
                 save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
                 save_to_json(error_reports, error_reports_file)
-                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+                if (i + 1) % frequency == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
 
         except Exception as e:
             print(f"Error processing stock {stock_code}: {e}")
             error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
+            if (i + 1) % 10 == 0 or i == total_stocks - 1:
+                save_to_json(company_basic_profiles, company_basic_profiles_file)
+                save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
+                save_to_json(error_reports, error_reports_file)
+                if (i + 1) % frequency == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
             continue
 
         # 保存最终结果
@@ -235,6 +241,7 @@ def get_company_basic_profiles(base_path='./stock_data', report_date=get_yesterd
     :param report_date 指定每日报告的日期，YYYYMMDD的str，默认是昨天；若非当日闭市隔次开市前读取，市盈率一定是错的（由实时数据读取得到）
     :return: 直接将每日报告写入公司文件夹。
     """
+    print("now executing function get_company_basic_profiles")
     company_base_path = os.path.join(base_path, "company_data")
 
     # 读取沪A股和深A股的数据
@@ -265,7 +272,7 @@ def get_company_basic_profiles(base_path='./stock_data', report_date=get_yesterd
     # 生成沪A股和深A股的每日报表
     get_company_basic_profile(sh_a_stocks, company_base_path, processed_stocks, 0, report_date, interrupt_file)
     get_company_basic_profile(sz_a_stocks, company_base_path, processed_stocks, 1, report_date, interrupt_file)
-
+    print("Successfully executing function get_company_basic_profiles")
 
 if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))

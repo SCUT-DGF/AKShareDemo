@@ -54,6 +54,14 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
         print(base_path)
 
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        config_file_path = os.path.join(project_root, 'conf', 'config.json')
+        data_dir_path = os.path.join(project_root, 'data')
+        # 读取配置文件
+        with open(config_file_path, 'r') as f:
+            config = json.load(f)
+        base_path = config['base_path']
+
         begin_date = "20240729"
         end_date = "20240801"
         report_id = "20240801"
@@ -61,15 +69,9 @@ if __name__ == "__main__":
         weekly = True
         monthly = True
 
-        from get_news_cctv import fs_news_cctv
         from get_news_cctv import fs_multiple_news_cctv
         from get_macro_data import get_macro_data
-        from get_basic_and_special_data import calling_func
         from get_company_profile import get_company_basic_profiles
-        from get_company_relative_profile import get_company_relative_profiles
-        from get_weekly_report_and_daily_up2 import get_weekly_reports
-        from get_weekly_report_and_daily_up2 import get_up_stock_interface
-        from get_weekly_report_and_daily_up2 import check_daily_up_interface
 
         getting_news_cctv = True if daily else False
         getting_macro_data = True if monthly else False
@@ -77,46 +79,16 @@ if __name__ == "__main__":
         getting_special_data = True if weekly else False
         getting_basic_profile = True if weekly else False
         getting_relative_profile = True if weekly else False
-        getting_weekly_reports = True if weekly else False
-        getting_up_stock = True if daily else False
-        getting_check_up = True if daily else False
-
 
         if getting_news_cctv:
             news_cctv_filepath = ""
             # 路径确定放在函数里了
-            fs_multiple_news_cctv(start_date=begin_date,end_date=end_date)
+            fs_multiple_news_cctv(start_date=begin_date, end_date=end_date, base_path=base_path)
         if getting_macro_data:
             macro_data_filepath = os.path.join(base_path, "macro_data")
             get_macro_data(daily=daily, monthly=monthly, yearly=monthly,  output_folder=macro_data_filepath)
 
-        if getting_basic_data or getting_special_data:
-            basic_special_data_filepath = os.path.join(base_path, "stock_relative")
-            # Fetch basic and special data
-            calling_func(begin_date=begin_date,end_date=end_date, report_id=report_id, base_path=basic_special_data_filepath)
-
         if getting_basic_profile:
-            basic_profile_filepath = os.path.join(base_path, "company_data")
+            # basic_profile_filepath = os.path.join(base_path, "company_data")
             # Fetch basic company profiles
-            get_company_basic_profiles(base_path=basic_profile_filepath)
-
-        if getting_relative_profile:
-            relative_profile_filepath = os.path.join(base_path, "stock_relative")
-            # Fetch relative company profiles
-            get_company_relative_profiles(base_path=relative_profile_filepath, report_date=report_id)
-
-        if getting_weekly_reports:
-            weekly_reports_filepath = os.path.join(base_path, "company_data")
-            # Fetch weekly reports
-            get_weekly_reports(date=end_date, report_date=report_id, company_base_path=weekly_reports_filepath)
-
-        if getting_check_up:
-            check_up_filepath = os.path.join(base_path, "company_data")
-            # Check daily up interface data
-            check_daily_up_interface(date=end_date, base_path=check_up_filepath, creating_new_dict=True)
-
-        if getting_up_stock:
-            up_stock_filepath = os.path.join(base_path, "company_data")
-            # Fetch up stock interface data
-            get_up_stock_interface(date=end_date, base_path=up_stock_filepath)
-
+            get_company_basic_profiles(base_path=base_path)

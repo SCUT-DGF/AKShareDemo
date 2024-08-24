@@ -171,7 +171,7 @@ def get_company_relative_profile(stock_dict, base_path, processed_stocks, flag, 
     :param stock_sz_a_spot_em_df: 深A股数据
     :return: 无返回值，直接写入文件并存储
     """
-
+    frequency = 300
     company_relative_profiles_file = os.path.join(base_path, f"company_relative_profiles_{report_date}.json")
     error_reports_file = os.path.join(base_path, f"error_reports_{report_date}.json")
 
@@ -256,11 +256,18 @@ def get_company_relative_profile(stock_dict, base_path, processed_stocks, flag, 
                 save_to_json(company_relative_profiles, company_relative_profiles_file)
                 save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
                 save_to_json(error_reports, error_reports_file)
-                print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
+                if (i + 1) % frequency == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
 
         except Exception as e:
             print(f"Error processing stock {stock_code}: {e}")
             error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
+            if (i + 1) % 10 == 0 or i == total_stocks - 1:
+                save_to_json(company_relative_profiles, company_relative_profiles_file)
+                save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
+                save_to_json(error_reports, error_reports_file)
+                if (i + 1) % frequency == 0:
+                    print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
             continue
 
         # 保存最终结果
@@ -276,6 +283,7 @@ def get_company_relative_profiles(base_path='./stock_data', report_date=get_yest
     :param report_date 指定每日报告的日期，YYYYMMDD的str，默认是昨天；若非当日闭市隔次开市前读取，市盈率一定是错的（由实时数据读取得到）
     :return: 直接将每日报告写入公司文件夹。
     """
+    print("now executing function get_company_relative_profiles")
     base_company_path = os.path.join(base_path, "company_data")
 
     # 读取沪A股和深A股的数据
@@ -306,7 +314,7 @@ def get_company_relative_profiles(base_path='./stock_data', report_date=get_yest
                                  stock_sz_a_spot_em_df, interrupt_file)
     get_company_relative_profile(sz_a_stocks, base_company_path, processed_stocks, 1, report_date, stock_sh_a_spot_em_df,
                                  stock_sz_a_spot_em_df, interrupt_file)
-
+    print("Successfully executing function get_company_relative_profiles")
 
 if __name__ == "__main__":
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
