@@ -315,7 +315,7 @@ def find_earliest_file(base_directory, name_prefix, targeted_date=None):
 def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='./stock_data/company_data',
                            report_date=get_yesterday(), get_full_file=False, individual_file=True):
     """
-    获取每日报表
+    遍历字典，调用func获得DataFrame数据并存储。文件标识由basic_name决定。func必须有symbol或stock参数
     :param func: 调用的接口函数
     :param basic_name: 接口的基本名称，用于给各文件命名
     :param stock_dict: 遍历的股票字典，已生成的的深A或沪A股字典
@@ -368,7 +368,6 @@ def stock_traversal_module(func, basic_name, stock_dict, flag, args, base_path='
         #         return
         if debug and i >300:
             return
-
 
         # 跳过已处理的股票
         if stock_code in processed_stocks:
@@ -478,7 +477,7 @@ def get_matching_h_stocks():
 
 def create_dict(base_path='./stock_data', get_H_dict=True):
     """
-    :param base_path: 基本路径，默认为'./stock_data/company_data'。同样涉及到已有文件结构。
+    :param base_path: 基本路径，默认为'./stock_data'。同样涉及到已有文件结构。
     :param get_H_dict: True同时获取H股词典，只留下深沪股市对应的股票，False则不获取
     :return: 直接将生成的字典写入基本路径内，名称为"sh_a_stocks.json"与"sz_a_stocks.json"；返回沪、深、港的字典
     """

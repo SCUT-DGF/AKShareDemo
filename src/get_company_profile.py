@@ -56,10 +56,10 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
 
     if flag:
         market = "深A股"
-        # region = "sz"
+        region = "深市"
     else:
         market = "沪A股"
-        # region = "sh"
+        region = "沪市"
 
     report_date_str = report_date.replace("-", "").replace(":", "").replace(" ", "")
     today_str = date.today().strftime("%Y%m%d")
@@ -165,7 +165,7 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
                 company_profile = profile_df.at[0, '机构简介']
                 registered_capital = profile_df.at[0, '注册资金'] # 注册资本不是注册资金
                 establishment_date = profile_df.at[0, '上市日期']
-                region = profile_df.at[0, '经营范围'] # ?
+                # region = profile_df.at[0, '经营范围'] # ?
                 company_website = profile_df.at[0, '官方网站']
                 company_email = profile_df.at[0, '电子邮箱']
             else:
@@ -178,7 +178,7 @@ def get_company_basic_profile(stock_dict, base_path, processed_stocks, flag, rep
                 company_profile = profile_df.at[0, '机构简介']
                 registered_capital = profile_df.at[0, '注册资金'] # 注册资本不是注册资金
                 establishment_date = profile_df.at[0, '上市日期']
-                region = profile_df.at[0, '经营范围'] # ?
+                # region = profile_df.at[0, '经营范围'] # ?
                 company_website = profile_df.at[0, '官方网站']
                 company_email = profile_df.at[0, '电子邮箱']
 
@@ -273,6 +273,7 @@ def get_company_basic_profiles(base_path='./stock_data', report_date=get_yesterd
     get_company_basic_profile(sh_a_stocks, company_base_path, processed_stocks, 0, report_date, interrupt_file)
     get_company_basic_profile(sz_a_stocks, company_base_path, processed_stocks, 1, report_date, interrupt_file)
     print("Successfully executing function get_company_basic_profiles")
+
 
 if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))

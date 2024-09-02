@@ -143,7 +143,7 @@ def get_company_basic_profile(basic_name, stock_dict, base_path, processed_stock
     :return: 无返回值，直接写入文件并存储
     """
     # 自己定义
-    report_date = "20240709"
+    report_date = "20240829"
     data_file = os.path.join(base_path, f"{basic_name}_data_{report_date}.json")
     error_file = os.path.join(base_path, f"{basic_name}_error_reports_{report_date}.json")
 
@@ -252,10 +252,9 @@ def get_company_basic_profile(basic_name, stock_dict, base_path, processed_stock
         save_to_json(error_reports, error_file)
 
 
-def get_processed_data(base_path='./stock_data/company_data', begin_date=get_yesterday(),end_date=get_yesterday()):
+def get_processed_data(base_path='./stock_data/company_history_data', begin_date=get_yesterday(), end_date=get_yesterday()):
     """
-    :param base_path: 基本路径，默认为'./stock_data/company_data'。同样涉及到已有文件结构。
-    :param report_date 指定每日报告的日期，YYYYMMDD的str，默认是昨天；若非当日闭市隔次开市前读取，市盈率一定是错的（由实时数据读取得到）
+    :param base_path: 基本路径，默认为'./stock_data/company_history_data'。同样涉及到已有文件结构。
     :return: 直接将每日报告写入公司文件夹。
     """
     basic_name = "history_data"
@@ -271,10 +270,10 @@ def get_processed_data(base_path='./stock_data/company_data', begin_date=get_yes
     save_to_json(sz_a_stocks, os.path.join(base_path, "sz_a_stocks.json"))
 
     # # 指定日期
-    # report_date = get_yesterday()
+    report_date = get_yesterday()
 
     # 加载中断点记录
-    interrupt_file = os.path.join(base_path, f'{basic_name}_interrupt_.json')
+    interrupt_file = os.path.join(base_path, f'{basic_name}_interrupt_{report_date}.json')
     interrupt_data = load_json(interrupt_file)
     if not isinstance(interrupt_data, dict):
         interrupt_data = {}
@@ -284,19 +283,22 @@ def get_processed_data(base_path='./stock_data/company_data', begin_date=get_yes
     get_company_basic_profile(basic_name, sh_a_stocks, base_path, processed_stocks, 0, begin_date,end_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
     get_company_basic_profile(basic_name, sz_a_stocks, base_path, processed_stocks, 1, begin_date,end_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, interrupt_file)
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# print(current_dir)
-parent_dir = os.path.dirname(current_dir)
-# print(parent_dir)
-base_path =  os.path.join(parent_dir, 'data', 'stock_data/company_history_data')
 
-# 下面代码创建文件夹
-os.makedirs(os.path.join(parent_dir, 'data', 'stock_data'), exist_ok=True)
-os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data'), exist_ok=True)
-os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/深A股'), exist_ok=True)
-os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
-# 指定日期区间。注意该程序未提供数据规范化
-begin_date = "20240401"
-end_date = "20240710"
-get_processed_data(base_path=base_path,begin_date=begin_date,end_date=end_date)
-fs_multiple_news_cctv(begin_date, end_date)
+if __name__ == "__main__":
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    config_file_path = os.path.join(project_root, 'conf', 'config.json')
+    # 读取配置文件
+    with open(config_file_path, 'r') as f:
+        config = json.load(f)
+    base_path = config['base_path']
+    targeted_path = os.path.join(base_path, 'company_history_data')
+
+    # 下面代码创建文件夹
+    os.makedirs(os.path.join(base_path, 'company_history_data'), exist_ok=True)
+    os.makedirs(os.path.join(base_path, 'company_history_data/深A股'), exist_ok=True)
+    os.makedirs(os.path.join(base_path, 'company_history_data/沪A股'), exist_ok=True)
+    # 指定日期区间。注意该程序未提供数据规范化
+    begin_date = "20230101"
+    end_date = "20231231"
+    get_processed_data(base_path=targeted_path, begin_date=begin_date, end_date=end_date)
+    fs_multiple_news_cctv(begin_date, end_date)

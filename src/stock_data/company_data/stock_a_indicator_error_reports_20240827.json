@@ -1,0 +1,1509 @@
+[
+    {
+        "stock_name": "西山科技",
+        "stock_code": "688576",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "赛伦生物",
+        "stock_code": "688163",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "科森科技",
+        "stock_code": "603626",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "洪通燃气",
+        "stock_code": "605169",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "友好集团",
+        "stock_code": "600778",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "国检集团",
+        "stock_code": "603060",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "文一科技",
+        "stock_code": "600520",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "东百集团",
+        "stock_code": "600693",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "天宸股份",
+        "stock_code": "600620",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "祥源文旅",
+        "stock_code": "600576",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "莫高股份",
+        "stock_code": "600543",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "华阳新材",
+        "stock_code": "600281",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "井松智能",
+        "stock_code": "688251",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "凌云光",
+        "stock_code": "688400",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "福达合金",
+        "stock_code": "603045",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "鸣志电器",
+        "stock_code": "603728",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "哈森股份",
+        "stock_code": "603958",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "海量数据",
+        "stock_code": "603138",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "金健米业",
+        "stock_code": "600127",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "新益昌",
+        "stock_code": "688383",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "五芳斋",
+        "stock_code": "603237",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宏力达",
+        "stock_code": "688330",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "浙江自然",
+        "stock_code": "605080",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "贵广网络",
+        "stock_code": "600996",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中央商场",
+        "stock_code": "600280",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "瑞华泰",
+        "stock_code": "688323",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "永安期货",
+        "stock_code": "600927",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中微半导",
+        "stock_code": "688380",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "海油发展",
+        "stock_code": "600968",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "禾川科技",
+        "stock_code": "688320",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宏华数科",
+        "stock_code": "688789",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "南宁百货",
+        "stock_code": "600712",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "珀莱雅",
+        "stock_code": "603605",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "盟升电子",
+        "stock_code": "688311",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "统一股份",
+        "stock_code": "600506",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "王府井",
+        "stock_code": "600859",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "华立股份",
+        "stock_code": "603038",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "煜邦电力",
+        "stock_code": "688597",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "聚和材料",
+        "stock_code": "688503",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中际联合",
+        "stock_code": "605305",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "镇洋发展",
+        "stock_code": "603213",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "亿嘉和",
+        "stock_code": "603666",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "威腾电气",
+        "stock_code": "688226",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "安恒信息",
+        "stock_code": "688023",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "大众交通",
+        "stock_code": "600611",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中信博",
+        "stock_code": "688408",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宝钛股份",
+        "stock_code": "600456",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "岱美股份",
+        "stock_code": "603730",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "磁谷科技",
+        "stock_code": "688448",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "新亚强",
+        "stock_code": "603155",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "沃尔德",
+        "stock_code": "688028",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "柯力传感",
+        "stock_code": "603662",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "亚邦股份",
+        "stock_code": "603188",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "建业股份",
+        "stock_code": "603948",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "北特科技",
+        "stock_code": "603009",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "东方环宇",
+        "stock_code": "603706",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宁水集团",
+        "stock_code": "603700",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "埃科光电",
+        "stock_code": "688610",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "深科达",
+        "stock_code": "688328",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中航沈飞",
+        "stock_code": "600760",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "江苏吴中",
+        "stock_code": "600200",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "亨通光电",
+        "stock_code": "600487",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "三安光电",
+        "stock_code": "600703",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "东方电缆",
+        "stock_code": "603606",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "富春染织",
+        "stock_code": "605189",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "华电国际",
+        "stock_code": "600027",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "步科股份",
+        "stock_code": "688160",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "康拓医疗",
+        "stock_code": "688314",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "华锡有色",
+        "stock_code": "600301",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "汇嘉时代",
+        "stock_code": "603101",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "信达证券",
+        "stock_code": "601059",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "美埃科技",
+        "stock_code": "688376",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "迪威尔",
+        "stock_code": "688377",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宁波中百",
+        "stock_code": "600857",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "京能电力",
+        "stock_code": "600578",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "兴发集团",
+        "stock_code": "600141",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中路股份",
+        "stock_code": "600818",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "亚振家居",
+        "stock_code": "603389",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "迎丰股份",
+        "stock_code": "605055",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "新凤鸣",
+        "stock_code": "603225",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "四川金顶",
+        "stock_code": "600678",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "天地科技",
+        "stock_code": "600582",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "博睿数据",
+        "stock_code": "688229",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "欧亚集团",
+        "stock_code": "600697",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "四方新材",
+        "stock_code": "605122",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "富吉瑞",
+        "stock_code": "688272",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "永茂泰",
+        "stock_code": "605208",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中天科技",
+        "stock_code": "600522",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "莱伯泰科",
+        "stock_code": "688056",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "海汽集团",
+        "stock_code": "603069",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "隆鑫通用",
+        "stock_code": "603766",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "绿的谐波",
+        "stock_code": "688017",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "龙图光罩",
+        "stock_code": "688721",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "北巴传媒",
+        "stock_code": "600386",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "东方集团",
+        "stock_code": "600811",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "华秦科技",
+        "stock_code": "688281",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "云路股份",
+        "stock_code": "688190",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "赛微微电",
+        "stock_code": "688325",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "大商股份",
+        "stock_code": "600694",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "春风动力",
+        "stock_code": "603129",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "帕瓦股份",
+        "stock_code": "688184",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "海南橡胶",
+        "stock_code": "601118",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "长白山",
+        "stock_code": "603099",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "晋控煤业",
+        "stock_code": "601001",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "贵研铂业",
+        "stock_code": "600459",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "国科军工",
+        "stock_code": "688543",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "洪都航空",
+        "stock_code": "600316",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中国船舶",
+        "stock_code": "600150",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中国中免",
+        "stock_code": "601888",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "莱绅通灵",
+        "stock_code": "603900",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "国网英大",
+        "stock_code": "600517",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "湖南海利",
+        "stock_code": "600731",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "振华股份",
+        "stock_code": "603067",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "国博电子",
+        "stock_code": "688375",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "庚星股份",
+        "stock_code": "600753",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "山煤国际",
+        "stock_code": "600546",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "银龙股份",
+        "stock_code": "603969",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "吉视传媒",
+        "stock_code": "601929",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "驰宏锌锗",
+        "stock_code": "600497",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "恒力石化",
+        "stock_code": "600346",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "新华网",
+        "stock_code": "603888",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "江西长运",
+        "stock_code": "600561",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "华钰矿业",
+        "stock_code": "601020",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "工大高科",
+        "stock_code": "688367",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "长春燃气",
+        "stock_code": "600333",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "红星发展",
+        "stock_code": "600367",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "仁度生物",
+        "stock_code": "688193",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "老凤祥",
+        "stock_code": "600612",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "松炀资源",
+        "stock_code": "603863",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "麦迪科技",
+        "stock_code": "603990",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "麦澜德",
+        "stock_code": "688273",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "德科立",
+        "stock_code": "688205",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "新泉股份",
+        "stock_code": "603179",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "恒立液压",
+        "stock_code": "601100",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "综艺股份",
+        "stock_code": "600770",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "阳光诺和",
+        "stock_code": "688621",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "金鹰股份",
+        "stock_code": "600232",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "聚合顺",
+        "stock_code": "605166",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宁波富邦",
+        "stock_code": "600768",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "灿勤科技",
+        "stock_code": "688182",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中研股份",
+        "stock_code": "688716",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "诺邦股份",
+        "stock_code": "603238",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "生益科技",
+        "stock_code": "600183",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "大全能源",
+        "stock_code": "688303",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "禾望电气",
+        "stock_code": "603063",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "东阳光",
+        "stock_code": "600673",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "菲达环保",
+        "stock_code": "600526",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "广西能源",
+        "stock_code": "600310",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "奥特维",
+        "stock_code": "688516",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中航重机",
+        "stock_code": "600765",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "茂业商业",
+        "stock_code": "600828",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中国海防",
+        "stock_code": "600764",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "永杉锂业",
+        "stock_code": "603399",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "大地熊",
+        "stock_code": "688077",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中再资环",
+        "stock_code": "600217",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "长江投资",
+        "stock_code": "600119",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中信金属",
+        "stock_code": "601061",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "青岛港",
+        "stock_code": "601298",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "凯因科技",
+        "stock_code": "688687",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "百隆东方",
+        "stock_code": "601339",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "小商品城",
+        "stock_code": "600415",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "哈药股份",
+        "stock_code": "600664",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "华纺股份",
+        "stock_code": "600448",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "云天化",
+        "stock_code": "600096",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中船防务",
+        "stock_code": "600685",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "麦加芯彩",
+        "stock_code": "603062",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "浙江龙盛",
+        "stock_code": "600352",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "浙江荣泰",
+        "stock_code": "603119",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "澄星股份",
+        "stock_code": "600078",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "鼎信通讯",
+        "stock_code": "603421",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "深圳新星",
+        "stock_code": "603978",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "川投能源",
+        "stock_code": "600674",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "航天环宇",
+        "stock_code": "688523",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "美克家居",
+        "stock_code": "600337",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "明阳智能",
+        "stock_code": "601615",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "禾信仪器",
+        "stock_code": "688622",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "标准股份",
+        "stock_code": "600302",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "丽尚国潮",
+        "stock_code": "600738",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "生益电子",
+        "stock_code": "688183",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "新世界",
+        "stock_code": "600628",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中无人机",
+        "stock_code": "688297",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "海兴电力",
+        "stock_code": "603556",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "通策医疗",
+        "stock_code": "600763",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "骄成超声",
+        "stock_code": "688392",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "金发科技",
+        "stock_code": "600143",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "统联精密",
+        "stock_code": "688210",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "佳禾食品",
+        "stock_code": "605300",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "扬农化工",
+        "stock_code": "600486",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "阳煤化工",
+        "stock_code": "600691",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "天微电子",
+        "stock_code": "688511",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "风神股份",
+        "stock_code": "600469",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "山东出版",
+        "stock_code": "601019",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "美邦股份",
+        "stock_code": "605033",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宁波联合",
+        "stock_code": "600051",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "华纳药厂",
+        "stock_code": "688799",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "通宝能源",
+        "stock_code": "600780",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "超讯通信",
+        "stock_code": "603322",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中国动力",
+        "stock_code": "600482",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宁沪高速",
+        "stock_code": "600377",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "先达股份",
+        "stock_code": "603086",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "万朗磁塑",
+        "stock_code": "603150",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "伟创电气",
+        "stock_code": "688698",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "银座股份",
+        "stock_code": "600858",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中国核电",
+        "stock_code": "601985",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "盛和资源",
+        "stock_code": "600392",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "巴比食品",
+        "stock_code": "605338",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "长阳科技",
+        "stock_code": "688299",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "牧高笛",
+        "stock_code": "603908",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中远海发",
+        "stock_code": "601866",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "醋化股份",
+        "stock_code": "603968",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "恒盛能源",
+        "stock_code": "605580",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "海油工程",
+        "stock_code": "600583",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "国电电力",
+        "stock_code": "600795",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中孚实业",
+        "stock_code": "600595",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "道森股份",
+        "stock_code": "603800",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "山东玻纤",
+        "stock_code": "605006",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "巍华新材",
+        "stock_code": "603310",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "国力股份",
+        "stock_code": "688103",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "野马电池",
+        "stock_code": "605378",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "轻纺城",
+        "stock_code": "600790",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "国投电力",
+        "stock_code": "600886",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "昀冢科技",
+        "stock_code": "688260",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "航发动力",
+        "stock_code": "600893",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "海南椰岛",
+        "stock_code": "600238",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "林洋能源",
+        "stock_code": "601222",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "桂冠电力",
+        "stock_code": "600236",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "移远通信",
+        "stock_code": "603236",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "六国化工",
+        "stock_code": "600470",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "新疆火炬",
+        "stock_code": "603080",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中控技术",
+        "stock_code": "688777",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "国邦医药",
+        "stock_code": "605507",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "五洲新春",
+        "stock_code": "603667",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "凌云股份",
+        "stock_code": "600480",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "江航装备",
+        "stock_code": "688586",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "文峰股份",
+        "stock_code": "601010",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "南京商旅",
+        "stock_code": "600250",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "岳阳林纸",
+        "stock_code": "600963",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "皖通高速",
+        "stock_code": "600012",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宏柏新材",
+        "stock_code": "605366",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "南卫股份",
+        "stock_code": "603880",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "首创证券",
+        "stock_code": "601136",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "中信重工",
+        "stock_code": "601608",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "金冠电气",
+        "stock_code": "688517",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "东方明珠",
+        "stock_code": "600637",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "新赛股份",
+        "stock_code": "600540",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "金瑞矿业",
+        "stock_code": "600714",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "凯尔达",
+        "stock_code": "688255",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "宣泰医药",
+        "stock_code": "688247",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "春立医疗",
+        "stock_code": "688236",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "三孚股份",
+        "stock_code": "603938",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name": "晨丰科技",
+        "stock_code": "603685",
+        "flag": 0,
+        "Error": "__main__.process_full_df_data() argument after ** must be a mapping, not tuple"
+    },
+    {
+        "stock_name"

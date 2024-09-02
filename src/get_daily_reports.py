@@ -397,5 +397,5 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/深A股'), exist_ok=True)
         os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
         print(base_path)
-    base_path = os.path.join(base_path, "company_data")
-    get_daily_reports(company_base_path=base_path, report_date="20240809")
+    # base_path = os.path.join(base_path, "company_data")
+    get_daily_reports(base_path=base_path, report_date="20240809")
