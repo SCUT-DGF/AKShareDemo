@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import argparse
 import threading
 import time
-import requests
+# import requests
 from get_stock_data import get_stock_data
 from get_stock_data import get_stock_data_H
 from get_daily_reports import get_daily_reports
@@ -113,8 +113,9 @@ def other_daily_task(base_dir, report_date):
     该分支能与每日报告并行
     """
     print("other_daily_task begins to run \n")
-    combine_hourly_daily_data(begin_date=report_date, end_date=report_date, base_path=base_dir,
-                              name_prefix_option={"realtime_data": True, "daily_report": False})
+    # 240910暂时不调试合并数据的接口，考虑修改该接口功能
+    # combine_hourly_daily_data(begin_date=report_date, end_date=report_date, base_path=base_dir,
+    #                           name_prefix_option={"realtime_data": True, "daily_report": False})
     check_daily_up_interface(report_date, base_dir, True)
 
 def other_daily_task2(base_dir, report_date):
@@ -165,8 +166,6 @@ def daily_task(base_dir, config_path):
         parser_daily.add_argument('--report_date', type=str, default=current_date,
                                   help='A targeted date for getting data')
         args_daily = parser_daily.parse_args()
-
-
 
         # 判断是否是15:00之后，并且确保当天数据只获取一次
         if now.hour >= 15 and last_report_date < now.date():
@@ -319,4 +318,4 @@ if __name__ == "__main__":
 
     # 保持主线程运行
     while True:
-        time.sleep(1)
+        time.sleep(3600)

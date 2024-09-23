@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import akshare as ak
 import inspect
+import requests
 from datetime import date, datetime, timedelta
 
 # import keyboard
@@ -558,3 +559,35 @@ def load_config(config_path):
 def update_config(config_path, config):
     with open(config_path, 'w') as f:
         json.dump(config, f, indent=4)
+
+
+# def get_hoildays():
+#     # Step 1: 调用 API 获取今年的节假日数据
+#     year = datetime.now().year
+#     url = f"https://timor.tech/api/holiday/year/{year}?type=Y&week=Y"
+#     response = requests.get(url)
+#
+#     # 检查请求是否成功
+#     if response.status_code == 200:
+#         holidays_data = response.json()
+#
+#         # Step 2: 将数据保存到 ../data/ 文件夹中
+#         with open(f'../data/holidays_{year}.json', 'w', encoding='utf-8') as file:
+#             json.dump(holidays_data, file, ensure_ascii=False, indent=4)
+#
+#         # Step 3: 读取并判断节假日
+#         holidays = []
+#         if 'holiday' in holidays_data:
+#             for date, info in holidays_data['holiday'].items():
+#                 formatted_date = f"{year}-{date}"  # 格式化日期为 yyyy-mm-dd
+#                 holidays.append(f'"{formatted_date}"  # {info["name"]}')
+#
+#         # 打印节假日列表
+#         print(f"# {year}年的节假日列表")
+#         print("holidays = [")
+#         for holiday in holidays:
+#             print(f"    {holiday},")
+#         print("]")
+#     else:
+#         print(f"无法获取节假日数据，状态码: {response.status_code}")
+

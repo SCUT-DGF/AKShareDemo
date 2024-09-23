@@ -4,7 +4,7 @@ import pandas as pd
 import akshare as ak
 from datetime import date, datetime, timedelta
 from basic_func import save_to_json_v2
-from tqdm import tqdm
+# from tqdm import tqdm
 from basic_func import find_latest_file_v2
 class DateEncoder(json.JSONEncoder):
     def default(self, obj):

@@ -97,7 +97,6 @@ def find_latest_file_v2(base_directory, name_prefix, before_date=None, after_dat
                                 latest_file_path = os.path.join(root, file)
                 except ValueError:
                     continue
-
     return latest_file_path
 
 
@@ -138,6 +137,15 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
     if not isinstance(error_reports, list):
         error_reports = []
 
+    # 240910新增：整理字典ak.stock_zh_a_hist中获取失败的条目
+    fail_list_file = os.path.join(base_path, f"fail_dict_{report_date}.json")
+    fail_list = load_json(fail_list_file)
+    if not isinstance(fail_list, dict):
+        fail_list = {}
+    market_capitalization_covered = False
+    fail_to_fetch_stock_hist = False
+    fail_to_fetch_individual_info = False
+
     total_stocks = len(stock_dict)
     for i, stock in enumerate(stock_dict):
         stock_code = stock['代码']
@@ -146,6 +154,11 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
         # 跳过已处理的股票
         if stock_code in processed_stocks:
             # print(f"公司 {stock_name} 代码 {stock_code}已处理，跳过 ")
+            continue
+        elif stock_code in fail_list:
+            if not fail_to_fetch_stock_hist:
+                print("由于股票代码在被记录在fail_list中，直接跳过。不再输出fail_list相关提示\n")
+                fail_to_fetch_stock_hist = True
             continue
         if debug:
             if i > 300:
@@ -181,13 +194,23 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                                                f"{company_name_safe}_{basic_prefix}_{report_date_str}.json")
                 save_to_json_v2(stock_individual_info_em_df, path)
             if stock_individual_info_em_df.empty:
-                print(f"无法获取公司 {stock_name} 代码 {stock_code} 的个股信息，对应接口：ak.stock_individual_info_em")
+                print(f"无法获取公司 {stock_name} 代码 {stock_code} 的个股信息，对应接口：ak.stock_individual_info_em\n")
                 error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
                 continue
             # print("success2")
             # 提取所需字段
             total_stock = \
                 stock_individual_info_em_df.loc[stock_individual_info_em_df['item'] == '总股本', 'value'].values[0]
+            if total_stock == '-':
+                if not fail_to_fetch_individual_info:
+                    print(
+                        f"公司 {stock_name} 代码 {stock_code} 的个股股票信息不全，对应接口：stock_individual_info_em；不再提示该错误\n")
+                    fail_to_fetch_individual_info = True
+                fail_list[stock_code] = {"stock_name": stock_name, "flag": flag}
+                if (i + 1) % 20 == 0 or i == total_stocks - 1:
+                    save_to_json(fail_list, fail_list_file)
+                error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
+                continue
             total_stock = float(total_stock)
             # print("success2")
 
@@ -217,7 +240,10 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                 market_cap_close = (
                     stock_sz_a_spot_em_df.loc[stock_sz_a_spot_em_df['代码'] == stock_code, '总市值'].values)[0]
             if market_cap_open is None:
-                print("注意：使用闭盘总市值标注开盘总市值")
+                if not market_capitalization_covered:
+                    print("注意：使用闭盘总市值标注开盘总市值! 开盘总市值特征不可用！在本次获取中不再提示。")
+                    # 最好输出到log日志里
+                    market_capitalization_covered = True
                 market_cap_open = market_cap_close  # 暂时直接附闭盘总市值
             # print("success3")
 
@@ -229,7 +255,12 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                 stock_hist_df = ak.stock_zh_a_hist(symbol=stock_code, period="daily", start_date=report_date,
                                                    end_date=report_date, adjust="qfq")
             if stock_hist_df.empty:
-                print(f"无法获取公司 {stock_name} 代码 {stock_code} 的历史行情数据，对应接口：ak.stock_zh_a_hist")
+                if not fail_to_fetch_stock_hist:
+                    print(f"无法获取公司 {stock_name} 代码 {stock_code} 的历史行情数据，对应接口：ak.stock_zh_a_hist；不再提示该错误")
+                    fail_to_fetch_stock_hist = True
+                fail_list[stock_code] = {"stock_name": stock_name, "flag": flag}
+                if (i + 1) % 20 == 0 or i == total_stocks - 1:
+                    save_to_json(fail_list, fail_list_file)
                 error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
                 continue
             # 正确定义日期类型
@@ -317,7 +348,6 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
             #                                  f"adjusted_{company_name_safe}_adjusted_daily_report_{report_date_str}.json")
             # save_to_json(adjusted_daily_report, adjusted_daily_report_file2)
 
-
             # 记录已处理的股票
             processed_stocks.add(stock_code)
 
@@ -330,10 +360,10 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
                     print(f"This is {report_date}.")
                     print(f"Progress: {i + 1}/{total_stocks} stocks processed.")
 
-
         except Exception as e:
             print(f"Error processing stock {stock_code}: {e}")
             error_reports.append({"stock_name": stock_name, "stock_code": stock_code, "flag": flag})
+            save_to_json(fail_list, fail_list_file)
             if (i + 1) % 10 == 0 or i == total_stocks - 1:
                 save_to_json(daily_reports, daily_reports_file)
                 save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
@@ -344,6 +374,7 @@ def get_daily_report(stock_dict, base_path, processed_stocks, flag, report_date,
             continue
 
         # 保存最终结果
+        save_to_json(fail_list, fail_list_file)
         save_to_json(daily_reports, daily_reports_file)
         save_to_json({"processed_stocks": list(processed_stocks)}, interrupt_file)
         save_to_json(error_reports, error_reports_file)
@@ -398,4 +429,4 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(parent_dir, 'data', 'stock_data/company_history_data/沪A股'), exist_ok=True)
         print(base_path)
     # base_path = os.path.join(base_path, "company_data")
-    get_daily_reports(base_path=base_path, report_date="20240809")
+    get_daily_reports(base_path=base_path, report_date="20240910")

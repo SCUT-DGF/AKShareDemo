@@ -135,7 +135,7 @@ def merge_up_ah_data(stock_dict, processed_stocks, flag, report_date, interrupt_
                                              f"{company_name_safe}_daily_report_{report_date_str}.json")
             daily_report_df = load_json_df_all_scalar(daily_report_file)
             if (not existing_data) and daily_report_df.empty:
-                get_daily_report([{"代码":f"{stock_code}", "名称":f"{stock_name}"}], base_path, daily_report_processed_stocks,
+                get_daily_report([{"代码": f"{stock_code}", "名称": f"{stock_name}"}], base_path, daily_report_processed_stocks,
                                  flag, report_date, stock_sh_a_spot_em_df, stock_sz_a_spot_em_df, daily_report_interrupt_file)
             elif daily_report_df.empty:
                 raise ValueError("existing_data=True，而又没获取到已有的对应日期每日报表")
@@ -159,7 +159,6 @@ def merge_up_ah_data(stock_dict, processed_stocks, flag, report_date, interrupt_
             h_closing_price_today = stock_hk_hist_df.at[0, '收盘']
             h_price_change_today = stock_hk_hist_df.at[0, '涨跌额']
             h_price_change_percentage_today = stock_hk_hist_df.at[0, '涨跌幅']
-
 
             hk_valuation_baidu_zsz_filepath = os.path.join(base_path, "H_stock", company_name_safe,
                                            f"{company_name_safe}_hk_valuation_baidu_zsz_1y_{report_date_str}.json")
